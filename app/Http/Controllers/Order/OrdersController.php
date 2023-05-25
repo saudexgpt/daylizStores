@@ -71,9 +71,13 @@ class OrdersController extends Controller
             $user->email = $data->email;
             $password = randomPassword();
             $user->password = $password;
+            $user->address = $data->address;
+            $user->nearest_bustop = $data->nearest_bustop;
+            $user->save();
             // send login credentials email to user here
 
             Mail::to($user)->send(new CustomerCredentials($user, $password));
+            return $user;
         }
         $user->address = $data->address;
         $user->nearest_bustop = $data->nearest_bustop;
