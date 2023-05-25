@@ -24,7 +24,7 @@ $router->post('order/search', 'Order\OrdersController@search');
 $router->post('auth/login', 'AuthController@login');
 $router->post('auth/recover-password', 'AuthController@recoverPassword');
 $router->post('auth/reset-password', 'AuthController@resetPassword');
-$router->get('auth/confirm-password-reset-token/{token}', 'AuthController@confirmPasswordResetToken');
+$router->post('auth/confirm-password-reset-token', 'AuthController@confirmPasswordResetToken');
 
 $router->get('/menu-category', 'Stock\CategoriesController@index');
 $router->get('get-items', 'Stock\ItemsController@index');

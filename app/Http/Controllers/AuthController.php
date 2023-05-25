@@ -119,9 +119,9 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Email Not Found'], 500);
     }
-    public function confirmPasswordResetToken($token)
+    public function confirmPasswordResetToken(Request $request)
     {
-        $user_token = DB::table('password_resets')->where('token', $token)->first();
+        $user_token = DB::table('password_resets')->where('token', $request->token)->first();
         if ($user_token) {
             return response()->json(['email' => $user_token->email], 200);
         }
