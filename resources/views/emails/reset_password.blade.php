@@ -286,12 +286,12 @@
                                         {{ $user->name }},</span></strong></span></p>
                                 <p style="font-size: 14px; line-height: 190%;"><span
                                     style="font-size: 16px; line-height: 30.4px;">You made a request for a password
-                                    reset.<br /></span></p>
+                                    reset.<br />
+                                    Your reset token is:</span></p>
                                 <p>
                                   <span>
                                     <div>
-                                      Your reset token is:
-                                      <h4>{{ $token }}</h4>
+                                      <h2>{{ $token }}</h2>
                                     </div>
                                   </span>
                                 </p>
