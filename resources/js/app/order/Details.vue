@@ -32,7 +32,7 @@
         <!-- <label>Order Details</label><br> -->
         <h3>Order No.: {{ order.order_number }}</h3><br>
         <label>Date:</label> {{ moment(order.created_at).format('MMMM Do YYYY, h:mm:ss a') }}<br>
-        <label>Pickup Area: </label> {{ order.location.name }}
+        <label>Pickup Area: </label> {{ order.location }}
       </div>
       <!-- /.col -->
     </div>
@@ -63,7 +63,7 @@
             <tr>
               <td colspan="2">
                 <label>Shipping Cost:</label>
-                [{{ order.location.name }}]
+                [{{ order.location }}]
               </td>
               <td align="right">
                 {{ '₦' + formatNumber(order.delivery_cost, 2) }}

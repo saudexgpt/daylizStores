@@ -13,11 +13,9 @@
           :sm="12"
           :xs="24"
         >
-          <el-card v-if="userData.id === null">
-            <span slot="header">Kindly fill the form below to continue</span>
-            <div>
-              <!-- <label for="">Full Name <code>*</code></label>
-              <el-input v-model="checkOutForm.name" placeholder="Enter your full name" /> -->
+          <el-card>
+            <div v-if="userData.id === null">
+              <span slot="header">Kindly fill the form below to continue</span>
               <mdb-input
                 v-model="checkOutForm.name"
                 outline
@@ -46,44 +44,10 @@
                 auto-complete="off"
                 label="Phone *"
                 required="required"
-              />
-              <mdb-input
-                v-model="checkOutForm.address"
-                outline
-                name="address"
-                type="textarea"
-                auto-complete="off"
-                label="Address (House No. and street name) *"
-                required="required"
-              />
-              <mdb-input
-                v-model="checkOutForm.nearest_bustop"
-                outline
-                name="nearest_bustop"
-                type="text"
-                auto-complete="off"
-                label="Nearest Bustop"
-                required="required"
-              />
-              <!-- <label for="">Phone Number <code>*</code></label>
-              <el-input v-model="checkOutForm.phone" type="number" placeholder="Enter your phone number" /> -->
-              <!-- <label for="">Delivery Address <code>*</code></label>
-              <el-input v-model="checkOutForm.address" type="textarea" placeholder="Enter the address you want us to deliver your order" /> -->
-              <mdb-input
-                v-model="checkOutForm.notes"
-                outline
-                name="notes"
-                type="textarea"
-                auto-complete="off"
-                placeholder="You can give extra note for this order"
               />
             </div>
-          </el-card>
-          <el-card v-else>
-            <span slot="header"><label>Continue as {{ userData.name }}</label></span>
-            <div>
-              <!-- <label for="">Full Name <code>*</code></label>
-              <el-input v-model="checkOutForm.name" placeholder="Enter your full name" /> -->
+            <div v-else>
+              <span slot="header"><label>Continue as {{ userData.name }}</label></span>
               <mdb-input
                 v-model="checkOutForm.name"
                 outline
@@ -116,6 +80,8 @@
                 required="required"
                 disabled
               />
+            </div>
+            <div>
               <mdb-input
                 v-model="checkOutForm.address"
                 outline
@@ -134,10 +100,26 @@
                 label="Nearest Bustop"
                 required="required"
               />
-              <!-- <label for="">Phone Number <code>*</code></label>
-              <el-input v-model="checkOutForm.phone" type="number" placeholder="Enter your phone number" /> -->
-              <!-- <label for="">Delivery Address <code>*</code></label>
-              <el-input v-model="checkOutForm.address" type="textarea" placeholder="Enter the address you want us to deliver your order" /> -->
+              <h4>Delivery Location</h4>
+
+              <el-alert type="error">Please note that delivery fees are dependent on your location and will be charged separately</el-alert>
+              <br>
+              <!-- <el-select
+                      v-model="selected_location"
+                      value-key="id"
+                      filterable
+                      style="width: 100% !important;"
+                      @input="addDeliveryCost()"
+                    > -->
+              <el-cascader
+                v-model="checkOutForm.location"
+                placeholder="Pick Delivery Location"
+                :options="options"
+                :props="{ expandTrigger: 'hover' }"
+                filterable
+                :filter-method="customFilter"
+                style="width: 100% !important;"
+              />
               <mdb-input
                 v-model="checkOutForm.notes"
                 outline
@@ -183,40 +165,6 @@
                 <tr>
                   <td align="right"><h4>Total</h4></td>
                   <td align="right"><h4>{{ '₦' + formatNumber(pendingOrder.amount, 2) }}</h4></td>
-                </tr>
-                <tr>
-                  <td colspan="2">
-                    <h4>Delivery Location</h4>
-
-                    <el-alert type="error">Please note that delivery fees are dependent on your location and will be charged separately</el-alert>
-                    <!-- <el-select
-                      v-model="selected_location"
-                      value-key="id"
-                      filterable
-                      style="width: 100% !important;"
-                      @input="addDeliveryCost()"
-                    > -->
-                    <el-select
-                      v-model="checkOutForm.location_id"
-                      value-key="id"
-                      filterable
-                      style="width: 100% !important;"
-                    >
-                      <el-option value="" label="Pick Outlet Location" disabled />
-                      <el-option
-                        v-for="(location, loc_index) in locations"
-                        :key="loc_index"
-                        :value="location.id"
-                        :label="location.name"
-                      >
-                        <span> {{ location.name }}</span>
-                        <!-- <span class="pull-right" style="color: rgb(138, 34, 34); font-weight: 600;">&nbsp;{{ '₦' + formatNumber(location.cost, 2) }}</span> -->
-                      </el-option>
-                    </el-select>
-                  </td>
-                  <!-- <td align="right">
-                    {{ '₦' + formatNumber(deliveryCost, 2) }}
-                  </td> -->
                 </tr>
                 <tr>
                   <td colspan="2">
@@ -278,7 +226,19 @@ export default {
         address: '',
         notes: '',
         location_id: 1,
+        location: '',
       },
+      options: [{
+        value: 'Local Pickup',
+        label: 'Local Pickup',
+      }, {
+        value: 'Lagos',
+        label: 'Lagos Delivery',
+      }, {
+        value: 'Other States',
+        label: 'Other States',
+        children: [], // will be populated from backend
+      }],
       locations: [],
       selected_location: {},
       amount: '',
@@ -300,6 +260,9 @@ export default {
     this.$store.dispatch('order/loadOfflineData');
     this.fetchLocations();
     this.setForm();
+    setTimeout(() => {
+      this.setStates();
+    }, 3000);
   },
   methods: {
     formatNumber,
@@ -310,6 +273,28 @@ export default {
       app.checkOutForm.phone = app.userData.phone;
       app.checkOutForm.address = app.userData.address;
       app.checkOutForm.nearest_bustop = app.userData.nearest_bustop;
+    },
+    setStates() {
+      const app = this;
+      const states = app.params.states;
+      const formattedStateArray = [];
+      states.forEach(state => {
+        if (state !== 'Lagos') {
+          formattedStateArray.push({
+            value: state,
+            label: state,
+          });
+        }
+      });
+      app.options[2].children = formattedStateArray;
+    },
+    createFilter(queryString) {
+      return (item) => {
+        return (item.text.toLowerCase().indexOf(queryString.toLowerCase()) > -1);
+      };
+    },
+    customFilter(node, keyword) {
+      return (node.text.toLowerCase().indexOf(keyword.toLowerCase()) > -1);
     },
     addDeliveryCost() {
       const app = this;
@@ -339,7 +324,11 @@ export default {
       form.total = app.amount;
       form.delivery_cost = app.deliveryCost;
       if (form.name === '' || form.email === '' || form.phone === '' || form.address === '') {
-        alert('Kindly fill all the required fields');
+        app.$alert('Kindly fill all the required fields (Name, Email, Phone, Address)');
+        return false;
+      }
+      if (form.location === '') {
+        app.$alert('Kindly specify your preferred delivery location');
         return false;
       }
       if (!app.termsAgreed) {
@@ -362,7 +351,7 @@ export default {
           };
           app.$store.dispatch('order/setCartItems', []);
           app.$store.dispatch('order/setPendingOrder', pendingOrder);
-          app.$router.push({ path: 'track/order' });
+          app.$router.push({ path: '/track/order' });
         }
       }).catch(err => {
         console.log(err);

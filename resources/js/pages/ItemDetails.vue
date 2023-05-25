@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="load">
     <div v-if="selectedItem && load === false">
       <el-breadcrumb separator="|">
         <el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>

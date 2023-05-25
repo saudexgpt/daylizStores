@@ -18,7 +18,7 @@
               <strong>{{ item.name }}</strong>
             </td>
             <td>
-              <el-input-number v-model="item.quantity" controls-position="right" :min="1" size="small" @input="calculateTotal()" /><br>
+              <el-input-number v-model="item.quantity" :min="1" size="small" @input="calculateTotal()" /><br>
 
               <div :id="`rate_${item.id}`">{{ '₦' + formatNumber(item.price.amount, 2) }}</div>
             </td>

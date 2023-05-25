@@ -49,11 +49,10 @@
         style="width: 100%"
         @click.native.prevent="handleLogin"
       >Login</mdb-btn>
-      <!-- <div class="tips">
-        <div align="right">Yet to register?
-          <router-link :to="{name: 'Register'}">Click Here</router-link>
-        </div>
-      </div> -->
+
+      <div class="tips">
+        <h4 align="center"><router-link :to="{ path: '/home' }">Go Home</router-link></h4>
+      </div>
     </el-form>
     <el-form
       v-else
@@ -85,7 +84,7 @@
         @click.native.prevent="recoverPassword"
       >Send reset link</mdb-btn>
       <div class="tips">
-        <div align="right" @click="forgotPassword = false"><a>Back to Login</a></div>
+        <div align="center" @click="forgotPassword = false"><a>Back to Login</a></div>
       </div>
     </el-form>
   </div>
@@ -187,10 +186,7 @@ export default {
       app.loading = true;
       confirmEmailResource.store({ email: app.loginForm.email })
         .then(response => {
-          app.$alert({
-            message: response.message,
-            type: 'success',
-          });
+          app.$alert(response.message);
           app.loginForm.email = '';
           app.loading = false;
           this.$router.push({ path: '/reset-password' });

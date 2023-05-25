@@ -29,6 +29,45 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     protected $user;
+    public $states = [
+        "Abia",
+        "Adamawa",
+        "Akwa Ibom",
+        "Anambra",
+        "Bauchi",
+        "Bayelsa",
+        "Benue",
+        "Borno",
+        "Cross River",
+        "Delta",
+        "Ebonyi",
+        "Edo",
+        "Ekiti",
+        "Enugu",
+        "FCT - Abuja",
+        "Gombe",
+        "Imo",
+        "Jigawa",
+        "Kaduna",
+        "Kano",
+        "Katsina",
+        "Kebbi",
+        "Kogi",
+        "Kwara",
+        "Lagos",
+        "Nasarawa",
+        "Niger",
+        "Ogun",
+        "Ondo",
+        "Osun",
+        "Oyo",
+        "Plateau",
+        "Rivers",
+        "Sokoto",
+        "Taraba",
+        "Yobe",
+        "Zamfara"
+    ];
 
     public function uploadFile2(Request $request)
     {
@@ -99,6 +138,7 @@ class Controller extends BaseController
     }
     public function fetchCustomers()
     {
+        $userQuery = User::query();
         $customers = Customer::paginate(10);
         return response()->json(compact('customers'), 200);
     }
@@ -117,9 +157,10 @@ class Controller extends BaseController
         $order_statuses = ['Pending', 'On Transit', 'Delivered', 'Cancelled'];
         $genders = ['Men', 'Ladies', 'Boys', 'Girls'];
         $all_roles = Role::orderBy('name')->select('name')->get();
+        $states = $this->states;
         //$customer_types = CustomerType::get();
         return response()->json([
-            'params' => compact('all_locations', 'company_name', 'company_contact', 'warehouses', 'items', 'currency', 'genders', 'all_roles', 'order_statuses', 'account_details', 'terms_and_conditions')
+            'params' => compact('all_locations', 'company_name', 'company_contact', 'warehouses', 'items', 'currency', 'genders', 'all_roles', 'order_statuses', 'account_details', 'terms_and_conditions', 'states')
         ]);
     }
     public function settingValue($key)

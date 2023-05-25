@@ -30,10 +30,10 @@ class OrdersController extends Controller
         $location_id = $request->location_id;
         $condition = [];
         $condition2 = [];
-        if ($location_id !== 'all') {
+        // if ($location_id !== 'all') {
 
-            $condition = ['location_id' => $location_id];
-        }
+        //     $condition = ['location_id' => $location_id];
+        // }
         if (isset($request->status) && $request->status != '') {
             ////// query by status //////////////
             $status = $request->status;
@@ -110,7 +110,7 @@ class OrdersController extends Controller
         $prefix = 'DLZ';
         $order_items = json_decode(json_encode($request->cart_items));
         $order = new Order();
-        $order->location_id        = $request->location_id;
+        $order->location       = $request->location;
         $order->user_id         = $user->id;
         // $order->subtotal            = $request->subtotal;
         // $order->discount            = $request->discount;

@@ -331,8 +331,8 @@
                                 <p>
                                   <span>
                                     <div>
-                                      You will be required to change your password to something personal on your first
-                                      login
+                                      You can change your password any time when you visit <code>My Profile</code> on
+                                      the website
                                     </div>
                                   </span>
                                 </p>

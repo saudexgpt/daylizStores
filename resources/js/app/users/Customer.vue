@@ -8,7 +8,7 @@
             placeholder="Search"
             style="width: 200px"
             class="filter-item"
-            @input="handleFilter"
+            @input="handleFilter(false)"
           />
         </el-col>
         <el-col :xs="24" :sm="12" :md="12">
@@ -56,12 +56,13 @@
 import Pagination from '@/components/Pagination'; // Secondary package based on el-pagination
 import UploadExcelComponent from '@/components/UploadExcel/index.vue';
 import Resource from '@/api/resource';
+import UserResource from '@/api/user';
 import waves from '@/directive/waves'; // Waves directive
 import permission from '@/directive/permission'; // Permission directive
 import checkPermission from '@/utils/permission'; // Permission checking
 import AddNewCustomer from './AddNewCustomer';
 
-const userResource = new Resource('fetch-customers');
+const userResource = new UserResource();
 const resetUserPasswordResource = new Resource('users/reset-password');
 const necessaryParams = new Resource('fetch-necessary-params');
 const uploadBulkCustomer = new Resource('users/add-bulk-customers');
@@ -81,7 +82,9 @@ export default {
       tableData: [],
       tableHeader: [],
       list: [],
-      columns: ['name', 'phone'],
+      columns: ['name',
+        'email',
+        'phone'],
 
       options: {
         headings: {
@@ -246,22 +249,22 @@ export default {
       //   // alert('An error occured while trying to upload bulk product. Kindly try again.');
       // });
     },
-    async getList() {
+    async getList(load = true) {
       const { limit, page } = this.query;
       this.options.perPage = limit;
       this.options.pagination.chunk = limit;
-      this.loading = true;
-      const { customers } = await userResource.list(this.query);
-      this.list = customers.data;
+      this.loading = load;
+      const response = await userResource.list(this.query);
+      this.list = response.data;
       this.list.forEach((element, index) => {
         element['index'] = (page - 1) * limit + index + 1;
       });
-      this.total = customers.total;
+      this.total = response.meta.total;
       this.loading = false;
     },
-    handleFilter() {
+    handleFilter(load = true) {
       this.query.page = 1;
-      this.getList();
+      this.getList(load);
     },
     handleCreate() {
       // this.resetNewUser();

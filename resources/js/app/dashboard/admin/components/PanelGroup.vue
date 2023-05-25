@@ -3,8 +3,8 @@
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="small-box bg-aqua-gradient">
         <div class="inner">
-          <h3>{{ dataSummary.menu_varieties }}</h3>
-          <p>Items</p>
+          <h3>{{ dataSummary.products }}</h3>
+          <p>Products</p>
         </div>
         <div class="icon">
           <i class="el-icon-s-order" />
@@ -14,8 +14,8 @@
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="small-box bg-green-gradient">
         <div class="inner">
-          <h3>{{ (dataSummary.total_sales !== null) ? `₦${formatNumber(dataSummary.total_sales, 2)}` : '₦0.00' }}</h3>
-          <p>Total Sales</p>
+          <h3>{{ dataSummary.delivered_orders }}</h3>
+          <p>Delivered Orders</p>
         </div>
         <div class="icon">
           <i class="el-icon-money" />

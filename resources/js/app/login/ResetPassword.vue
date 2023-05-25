@@ -99,7 +99,7 @@ export default {
       const token = app.token;
       const confirmTokenResource = new Resource('auth/confirm-password-reset-token');
       app.loading = true;
-      confirmTokenResource.get(token)
+      confirmTokenResource.store({ token })
         .then(response => {
           app.loginForm.email = response.email;
           app.loading = false;

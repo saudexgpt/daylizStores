@@ -50,13 +50,14 @@ class UserController extends Controller
     {
         $searchParams = $request->all();
         $userQuery = User::query();
-        $customerQuery = Customer::query();
         $limit = Arr::get($searchParams, 'limit', static::ITEM_PER_PAGE);
         $role = Arr::get($searchParams, 'role', '');
         $keyword = Arr::get($searchParams, 'keyword', '');
 
         if ($request->role === 'customer') {
-            $userQuery->with('customer');
+            $userQuery->where('role', 'customer');
+        } else {
+            $userQuery->where('role', '!=', 'customer');
         }
         if (!empty($keyword)) {
             $userQuery->where(function ($q) use ($keyword) {
@@ -64,21 +65,9 @@ class UserController extends Controller
                 $q->orWhere('email', 'LIKE', '%' . $keyword . '%');
                 $q->orWhere('phone', 'LIKE', '%' . $keyword . '%');
                 // $q->orWhere('address', 'LIKE', '%' . $keyword . '%');
-                $q->orWhereIn('id', function ($query) use ($keyword) {
-                    $query->select('user_id')->from('customers');
-                    //$query->where('type', 'LIKE', '%' . $keyword . '%');
-                    //$query->orWhere('team', 'LIKE', '%' . $keyword . '%');
-                });
-            });
-        }
-        if (!empty($role)) {
-            $userQuery->whereHas('roles', function ($q) use ($role) {
-                $q->where('name', $role);
-            });
-        } else {
-            $userQuery->whereHas('roles', function ($q) {
-                $q->where('name', '!=', 'customer');
-                $q->where('name', '!=', 'driver');
+                // $q->orWhereIn('id', function ($query) use ($keyword) {
+                //     $query->select('user_id')->from('customers');
+                // });
             });
         }
         // $userQuery->where('user_type', '!=', 'developer');

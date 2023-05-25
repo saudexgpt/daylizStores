@@ -33,9 +33,14 @@
             Ayobo-Ipaja,<br>
             Lagos, Nigeria
           </p>
-          <p class="mb-2"><i class="fa fa-phone-alt me-3" /> +234 814 687 5777</p>
+          <p class="mb-2"><i class="fa fa-phone-alt me-3" /> +234 814 687 5777 | +234 913 687 7689</p>
           <p class="mb-2"><i class="fa fa-envelope me-3" /> info@daylizstores.com</p>
           <p class="mb-2"><i class="fab fa-instagram me-3" /> @dayliz_stores</p>
+          <p class="mb-2"><a href="https://web.facebook.com/daylizcollections" target="_blank"><i class="fab fa-facebook me-3" /> Dayliz Collections</a></p>
+          <p class="mb-2"><a
+            href="https://web.whatsapp.com/send?phone=+2348146875777"
+            target="_blank"
+          ><i class="fab fa-whatsapp me-3" /> Message us via WhatsApp</a></p>
         </el-col>
       </div>
     </el-row>

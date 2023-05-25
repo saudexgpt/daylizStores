@@ -3,6 +3,20 @@
     <panel-group v-if="data_summary" :data-summary="data_summary" />
 
     <order />
+    <!-- <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Stock Balance</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(stock, index) in running_out_of_stock_products" :key="index">
+          <td>{{ stock.item.name }}</td>
+          <td>{{ stock.total_balance }}</td>
+        </tr>
+      </tbody>
+    </table> -->
   </div>
 </template>
 
@@ -10,7 +24,6 @@
 import PanelGroup from './components/PanelGroup';
 import Order from '@/app/order';
 import Resource from '@/api/resource';
-const adminDashboard = new Resource('dashboard/admin');
 
 export default {
   name: 'AdminDashboard',
@@ -21,21 +34,31 @@ export default {
   data() {
     return {
       data_summary: '',
-      warehouses: [],
+      running_out_of_stock_products: [],
     };
   },
   mounted() {
     this.fetchDashboardDetails();
+    // this.runningOutOfStockProducts();
   },
   methods: {
     fetchDashboardDetails() {
       const app = this;
+      const adminDashboard = new Resource('dashboard/admin');
       adminDashboard.list()
         .then(response => {
           app.data_summary = response.data_summary;
-          app.warehouses = response.warehouses;
         });
     },
+    // runningOutOfStockProducts() {
+    //   const app = this;
+
+    //   const outOfStochProductsResource = new Resource('dashboard/admin/running-out-of-stock-products');
+    //   outOfStochProductsResource.list()
+    //     .then(response => {
+    //       app.running_out_of_stock_products = response.running_out_of_stock_products;
+    //     });
+    // },
   },
 };
 </script>

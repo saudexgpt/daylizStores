@@ -15,18 +15,18 @@
       <div class="box-body">
         <aside>
           <el-row>
-            <el-col :xs="24" :sm="12" :md="12">
+            <!-- <el-col :xs="24" :sm="12" :md="12">
               <p for="">Select Location</p>
               <el-select v-model="form.location_index" placeholder="Select Location" class="span" filterable @input="getOrders">
                 <el-option v-for="(location, index) in locations" :key="index" :value="index" :label="location.name" />
 
               </el-select>
 
-            </el-col>
+            </el-col> -->
             <el-col :xs="24" :sm="12" :md="12">
               <p for="">Select status</p>
               <el-select v-model="form.status" placeholder="Select Status" class="span" @input="getOrders">
-                <el-option v-for="(status, index) in order_statuses" :key="index" :value="status" :label="status" />
+                <el-option v-for="(status, index) in params.order_statuses" :key="index" :value="status" :label="status" />
 
               </el-select>
 
@@ -93,7 +93,7 @@ import checkRole from '@/utils/role';
 import OrderDetails from './Details';
 import Resource from '@/api/resource';
 // import Vue from 'vue';
-const necessaryParams = new Resource('fetch-necessary-params');
+// const necessaryParams = new Resource('fetch-necessary-params');
 const fetchOrders = new Resource('order/general');
 const approveOrderResource = new Resource('order/general/approve');
 const deliverOrderResource = new Resource('order/general/deliver');
@@ -129,7 +129,7 @@ export default {
       page: {
         option: 'list',
       },
-      params: [],
+      // params: [],
       form: {
         page: 1,
         limit: 10,
@@ -145,9 +145,14 @@ export default {
 
     };
   },
-
-  mounted() {
-    this.fetchNecessaryParams();
+  computed: {
+    params() {
+      return this.$store.getters.params;
+    },
+  },
+  created() {
+    // this.fetchNecessaryParams();
+    this.getOrders();
   },
   beforeDestroy() {
 
@@ -157,20 +162,20 @@ export default {
     checkPermission,
     checkRole,
     formatNumber,
-    fetchNecessaryParams() {
-      const app = this;
-      necessaryParams.list()
-        .then(response => {
-          app.params = response.params;
-          app.locations = app.locations.concat(response.params.locations);
-          app.order_statuses = response.params.order_statuses;
-          if (app.locations.length > 0) {
-            app.form.location_id = app.locations[0];
-            app.form.location_index = 0;
-            app.getOrders();
-          }
-        });
-    },
+    // fetchNecessaryParams() {
+    //   const app = this;
+    //   necessaryParams.list()
+    //     .then(response => {
+    //       app.params = response.params;
+    //       // app.locations = app.locations.concat(response.params.locations);
+    //       // app.order_statuses = response.params.order_statuses;
+    //       // if (app.locations.length > 0) {
+    //       //   app.form.location_id = app.locations[0];
+    //       //   app.form.location_index = 0;
+    //       //   app.getOrders();
+    //       // }
+    //     });
+    // },
     getOrders() {
       const app = this;
       const { limit, page } = this.form;
@@ -178,15 +183,14 @@ export default {
       this.load = true;
 
       const param = app.form;
-      param.location_id = app.locations[param.location_index].id;
       fetchOrders.list(param)
         .then(response => {
           this.orders = response.orders.data;
           this.orders.forEach((element, index) => {
             element['index'] = (page - 1) * limit + index + 1;
           });
-          this.total = response.meta.total;
-          app.in_location = 'in ' + app.locations[param.location_index].name;
+          this.total = response.orders.total;
+          //  app.in_location = 'in ' + app.locations[param.location_index].name;
           this.load = false;
         })
         .catch(error => {

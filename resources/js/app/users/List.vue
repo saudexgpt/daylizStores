@@ -8,7 +8,7 @@
             placeholder="Search"
             style="width: 200px"
             class="filter-item"
-            @input="handleFilter"
+            @input="handleFilter(false)"
           />
         </el-col>
         <el-col :xs="24" :sm="12" :md="12">
@@ -552,10 +552,10 @@ export default {
         // }
       });
     },
-    getList() {
+    getList(load = true) {
       const { limit, page } = this.query;
       this.options.perPage = limit;
-      this.load_table = true;
+      this.load_table = load;
       userResource
         .list(this.query)
         .then((response) => {
@@ -571,9 +571,9 @@ export default {
           this.load_table = false;
         });
     },
-    handleFilter() {
+    handleFilter(load = true) {
       this.query.page = 1;
-      this.getList();
+      this.getList(load);
     },
     handleCreate() {
       this.resetNewUser();

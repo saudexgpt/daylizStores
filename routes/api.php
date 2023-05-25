@@ -74,7 +74,7 @@ $router->group(['middleware' => 'auth:api'], function () use ($router) {
         //customer
         $router->group(['prefix' => 'admin'], function () use ($router) {
             $router->get('/', 'DashboardController@adminDashboard'); //->middleware('permission:view admin dashboard');
-
+            $router->get('running-out-of-stock-products', 'DashboardController@itemsRunningOutOfStock');
         });
     });
     /////////////////////////STOCKS MODULE////////////////////////////
