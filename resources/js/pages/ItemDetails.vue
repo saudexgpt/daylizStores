@@ -27,16 +27,16 @@
           <div v-if="available_colors.length > 0">
             <strong>Colors:</strong>
             <span style="border: solid 1px #cccccc; padding: 5px 10px 5px 10px; margin: 5px; cursor: pointer">
-              <span @click="selectedItem.selectedColor = ''">X</span>
+              <span @click="setExtraDetails('', 'selectedColor')">X</span>
             </span>
-            <span v-for="(color, index) in available_colors" :key="index" :style="`background: ${color}; padding: 5px 15px 5px 15px; margin: 5px; cursor: pointer`">
-              <span @click="selectedItem.selectedColor = color"><i v-if="selectedItem.selectedColor === color" class="el-icon-check" /></span>
+            <span v-for="(color, index) in available_colors" :key="index" :style="`background: ${color}; padding: 5px 15px 5px 15px; margin: 5px; cursor: pointer`" @click="setExtraDetails(color, 'selectedColor')">
+              <span><i v-if="selectedColor === color" class="el-icon-check" /></span>
             </span>
           </div>
           <br>
           <div v-if="available_sizes.length > 0">
             <strong>Sizes: </strong>
-            <span v-for="(size, index) in available_sizes" :key="index"><span @click="selectedItem.selectedSize = size">{{ size }}</span>, </span>
+            <span v-for="(size, index) in available_sizes" :key="index" style="border: solid 1px #cccccc; cursor: pointer; padding: 5px"><span @click="setExtraDetails(size, 'selectedSize')"><i v-if="selectedSize === size" class="el-icon-check" /> {{ size }}</span></span>
           </div>
           <div>
             <hr>
@@ -142,6 +142,8 @@ export default {
       quantity: 1,
       available_colors: [],
       available_sizes: [],
+      selectedColor: '',
+      selectedSize: '',
       reviews: [],
       totalReviews: 0,
       overallReview: 0,
@@ -158,6 +160,11 @@ export default {
   },
   methods: {
     formatNumber,
+    setExtraDetails(value, field) {
+      const app = this;
+      app.selectedItem[field] = value;
+      app[field] = value;
+    },
     addItemToCart(item) {
       item.quantity = (this.quantity > 0) ? this.quantity : 1;
       this.$store.dispatch('order/addItemToCart', item);
@@ -196,6 +203,8 @@ export default {
       itemCategory.list({ slug })
         .then(response => {
           app.selectedItem = response.item;
+          app.selectedItem.selectedColor = '';
+          app.selectedItem.selectedSize = '';
           if (response.item) {
             app.selectedImg = response.item.media[0].link;
 

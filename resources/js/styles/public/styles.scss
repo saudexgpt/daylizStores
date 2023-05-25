@@ -39,10 +39,6 @@ p-0{padding:0 !important}.p-1{padding:.25rem !important}.p-2{padding:.5rem !impo
 .cart {
     padding: 20px 20px 20px 20px;
 }
-.app-container {
-  padding: 40px;
-  min-height: 200px;
-}
 .nav-item {
 
     font-family: "Heebo", sans-serif;
@@ -140,8 +136,10 @@ p-0{padding:0 !important}.p-1{padding:.25rem !important}.p-2{padding:.5rem !impo
     border-radius: 3px;
 }
 
+
 /* Tablet menu */
 @media all and (min-width: 700px) {
+
     // .menu {
     //     justify-content: center;
     // }

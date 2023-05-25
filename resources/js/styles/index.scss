@@ -59,13 +59,15 @@ html {
 
 .item-panel {
   padding: 10px;
+  border: 1px solid #f0f0f0;
   // text-align: center;
 }
-.zoom {
-  display: none
+.image-panel {
+  min-height: 180px
+  // text-align: center;
 }
 .item-panel:hover {
-  border: 1px solid #f0f0f0;
+  border: 1px solid #f39b9b;
   box-shadow: 1px 1px 2px 1px #cccccc;
   border-radius: 4px;
   cursor: pointer;
@@ -225,8 +227,8 @@ aside {
 }
 // main-container padding
 .app-container {
-  padding: 40px;
-  min-height: 200px;
+  padding: 40px !important;
+  min-height: 200px !important;
 }
 
 .components-container {
@@ -307,7 +309,31 @@ aside {
   color: #303133;
   position: relative;
 }
+.el-card__body {
+    overflow: auto !important;
+  }
 
+.logo-responsive {
+    width: 200px !important;
+}
+.name-responsive {
+    display: block !important;
+}
+@media all and (max-width: 460px) {
+  .image-panel{
+    min-height: 160px !important;
+  }
+  .app-container {
+    padding: 3px !important;
+  }
+  .name-responsive {
+    display: none !important;
+  }
+  .logo-responsive {
+    width: 100px !important
+  }
+
+}
 // .el-select{
 //   height:50px !important;
 //   line-height:50px !important;

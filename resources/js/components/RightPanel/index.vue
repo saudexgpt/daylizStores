@@ -29,9 +29,9 @@
           <i class="el-icon-close fa-2x" />
         </div>
         <!-- <slot /> -->
-        <cart v-if="view === 'cart'" @close="show = !show" />
-        <compare v-if="view === 'compare'" @close="show = !show" />
-        <wish-list v-if="view === 'wish_list'" @close="show = !show" />
+        <cart v-if="view === 'cart'" @close="togglePanel" />
+        <compare v-if="view === 'compare'" @close="togglePanel" />
+        <wish-list v-if="view === 'wish_list'" @close="togglePanel" />
       </div>
     </div>
   </div>

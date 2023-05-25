@@ -4,7 +4,7 @@
       <p>&nbsp;</p>
     </div> -->
     <div v-if="items.length > 0 && load === false">
-      <el-row>
+      <el-row :gutter="5">
         <el-col
           v-for="(item, index) in items"
           :key="index"
@@ -15,7 +15,7 @@
         >
           <div class="item-panel">
 
-            <div style="min-height: 180px">
+            <div class="image-panel">
               <router-link :to="{name: 'ProductDetails', params: { slug: item.slug}}">
                 <small>{{ item.category.name }}</small>
                 <div class="item-name">{{ item.name }}</div>
@@ -26,8 +26,12 @@
               <br>
               <div align="center">
                 <div class="amount">{{ '₦' + formatNumber(item.price.amount, 2) }}</div>
+                <div>
+                  <el-badge v-if="item.item_stocks.length > 0" value="In Stock" type="success" />
+                  <el-badge v-else value="Out of Stock" type="danger" />
+                </div>
               </div>
-              <div class="zoom">
+              <div>
                 <hr>
                 <el-tooltip class="pull-right" effect="dark" content="Add to wishlist" placement="top-start">
                   <el-button circle @click="addItemToWishlist(item)"><i class="fas fa-heart" /></el-button>

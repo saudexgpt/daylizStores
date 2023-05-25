@@ -28,7 +28,6 @@
                 auto-complete="off"
                 label="Email OR Phone *"
                 required="required"
-                :disabled="userData.id !== null"
               />
             </el-col>
             <el-col

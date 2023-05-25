@@ -32,7 +32,7 @@
           <tr>
             <td colspan="4" align="right">
               <button class="btn btn-primary" @click="shop();">Continue Shopping</button>
-              <button class="btn btn-success" @click="checkOut(); $emit('close');">
+              <button class="btn btn-success" @click="checkOut()">
                 Check Out
               </button>
             </td>
@@ -44,7 +44,7 @@
       <h1>&nbsp;</h1>
       <img src="/images/empty-cart.png">
       <h3>Your cart is empty. <br>Kindly shop for items</h3>
-      <button class="btn btn-primary" @click="$router.push({ path: '/product/list' }); show=!show">Shop Now</button>
+      <button class="btn btn-primary" @click="shop()">Shop Now</button>
     </div>
   </div>
 </template>
@@ -139,10 +139,10 @@ export default {
     },
     shop() {
       const app = this;
+      app.$emit('close');
       if (app.$route.name !== 'Menu') {
         app.$router.push({ path: '/product/list' });
       }
-      app.$emit('close');
     },
     checkOut() {
       const app = this;
@@ -151,10 +151,10 @@ export default {
       form.cart_items = app.cart;
       app.$store.dispatch('order/setCartItems', app.cart);
       app.$store.dispatch('order/setPendingOrder', form);
+      app.$emit('close');
       if (app.$route.name !== 'CheckOut') {
         app.$router.push({ path: '/product/check-out' });
       }
-      app.$emit('close');
     },
   },
 };

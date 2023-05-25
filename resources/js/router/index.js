@@ -63,6 +63,11 @@ export const constantRoutes = [{
   hidden: true,
 },
 {
+  path: '/reset-password',
+  component: () => import('@/app/login/ResetPassword'),
+  hidden: true,
+},
+{
   path: '/notifications',
   component: Layout,
   hidden: true,

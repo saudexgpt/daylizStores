@@ -54,7 +54,7 @@
           </thead>
           <tbody>
             <tr v-for="(order_item, index) in order.order_items" :key="index">
-              <td>{{ order_item.item.name }}</td>
+              <td>{{ order_item.product_name }}</td>
               <td>{{ order_item.quantity }}</td>
               <!-- <td>{{ order_item.item.price.amount }}</td> -->
               <!-- <td>{{ (order_item.tax * 100).toFixed(2) }}%</td> -->

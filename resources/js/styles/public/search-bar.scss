@@ -1,11 +1,4 @@
-.el-select .el-input {
-  width: 15rem;
-  border: 1px solid transparent !important;
-}
-.input-with-select .el-input-group__prepend {
-  background-color: #fcfcfc;
 
-}
 .no-border .el-input__inner {
   border: 2px solid #cccccc !important;
   height: 40px !important;
@@ -35,23 +28,14 @@
   font-size: 20px;
   text-align: center;
 }
-@media (max-width: 760px) {
-  .el-select .el-input {
-    width: 12rem;
-    border: 1px solid transparent !important;
-  }
-}
 @media (max-width: 560px) {
-  .el-select .el-input {
-    display: none !important;
-  }
   .el-input__inner {
-    border: 1px solid transparent !important;
+    border: 1px solid #bcbcc0 !important;
     border-top-left-radius: 30px !important;
     border-bottom-left-radius: 30px !important;
   }
   .el-input-group--prepend {
-    border: #bcbcc0 solid 2px;
+    border: #bcbcc0 solid 1px;
     border-top-left-radius: 30px !important;
     border-bottom-left-radius: 30px !important;
     height: 20px;

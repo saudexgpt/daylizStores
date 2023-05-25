@@ -1,6 +1,7 @@
 <template>
   <div class="login-container">
     <el-form
+      v-if="!forgotPassword"
       ref="loginForm"
       v-loading="loading"
       :model="loginForm"
@@ -37,7 +38,7 @@
         name="password"
         @keyup.enter.native="handleLogin"
       />
-      <!-- <p class="font-small blue-text d-flex justify-content-end pb-3" align="right"><router-link :to="{name: 'passwordRecovery'}">Forgot Password?</router-link></p> -->
+      <p class="blue-text d-flex justify-content-end pb-3" align="right" @click="forgotPassword = true"><a>Forgot Password?</a></p>
 
       <!-- <span class="show-pwd pull-right" @click="showPwd">
         <svg-icon icon-class="eye-open" />
@@ -54,11 +55,45 @@
         </div>
       </div> -->
     </el-form>
+    <el-form
+      v-else
+      ref="loginForm"
+      v-loading="loading"
+      :model="loginForm"
+      class="login-form"
+      auto-complete="on"
+      label-position="left"
+    >
+      <div align="center">
+        <img :src="img" alt="Company Logo" width="300">
+      </div>
+      <mdb-input
+        v-model="loginForm.email"
+        outline
+        far
+        icon="user"
+        name="email"
+        type="email"
+        auto-complete="off"
+        label="Email"
+        required="required"
+      />
+      <mdb-btn
+        :loading="loading"
+        color="primary"
+        style="width: 100%"
+        @click.native.prevent="recoverPassword"
+      >Send reset link</mdb-btn>
+      <div class="tips">
+        <div align="right" @click="forgotPassword = false"><a>Back to Login</a></div>
+      </div>
+    </el-form>
   </div>
 </template>
 
 <script>
 import 'mdbvue/lib/css/mdb.min.css';
+import Resource from '@/api/resource';
 // import LangSelect from '@/components/LangSelect';
 // import { validEmail } from '@/utils/validate';
 // import MdInput from '@/components/MDinput';
@@ -67,13 +102,6 @@ export default {
   name: 'Login',
   // components: { LangSelect },
   data() {
-    // const validateEmail = (rule, value, callback) => {
-    //   if (!validEmail(value)) {
-    //     callback(new Error('Please enter the correct email'));
-    //   } else {
-    //     callback();
-    //   }
-    // };
     const validateUsername = (rule, value, callback) => {
       if (value.length < 1) {
         callback(new Error('Please enter a valid User ID or Email'));
@@ -89,6 +117,7 @@ export default {
       }
     };
     return {
+      forgotPassword: false,
       img: 'images/logo2.png',
       loginForm: {
         email: '',
@@ -152,6 +181,28 @@ export default {
         }
       });
     },
+    recoverPassword() {
+      const app = this;
+      const confirmEmailResource = new Resource('auth/recover-password');
+      app.loading = true;
+      confirmEmailResource.store({ email: app.loginForm.email })
+        .then(response => {
+          app.$alert({
+            message: response.message,
+            type: 'success',
+          });
+          app.loginForm.email = '';
+          app.loading = false;
+          this.$router.push({ path: '/reset-password' });
+        })
+        .catch(error => {
+          app.$message({
+            message: error.response.data.message,
+            type: 'error',
+          });
+          app.loading = false;
+        });
+    },
   },
 };
 </script>
@@ -175,7 +226,7 @@ $light_gray: #eee;
     height: 100%;
     padding: 35px 35px 15px 35px;
     background-color: #fff;
-    opacity: 0.9;
+    opacity: 1;
   }
   .tips {
     font-size: 14px;

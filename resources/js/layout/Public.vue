@@ -14,7 +14,7 @@
         <li class="toggle" @click="openNav()"><i class="fas fa-bars" /></li>
         <li class="logo">
           <a href="/home">
-            <img :src="img" alt="Company Logo" width="200">
+            <img :src="img" alt="Company Logo" class="logo-responsive">
           </a>
         </li>
         <li class="search-nav">
@@ -26,8 +26,9 @@
         <li class="track-order">
           <el-dropdown size="medium" trigger="click">
             <span class="el-dropdown-link text-white" style="cursor: pointer">
-              <i class="el-icon-user fa-2x" />
-              <label> {{ (userData.id !== null) ? userData.name : 'Account' }} <i class="el-icon-arrow-down el-icon--right" /></label>
+              <label>
+                <i class="el-icon-user" /> {{ (userData.id !== null) ? userData.name : 'Account' }} <i class="el-icon-arrow-down el-icon--right" />
+              </label>
             </span>
             <el-dropdown-menu slot="dropdown" style="width: 200px !important; padding: 10px !important">
               <el-dropdown-item><a @click="load('/track/order')">Track Order</a></el-dropdown-item>
@@ -66,7 +67,7 @@
       <div id="mySidenav" class="sidenav">
         <a href="javascript:void(0)" class="closebtn" @click="closeNav()">&times;</a>
         <div v-for="(category, index) in categories" :key="index">
-          <router-link :to="{ name: 'CategorizedItems', params: { categoryId: category.id }}">{{ category.name }}</router-link>
+          <a @click=" closeNav(); loadNamedUrl('CategorizedItems', { categoryId: category.id });">{{ category.name }}</a>
         </div>
       </div>
       <el-row :gutter="10">
@@ -281,6 +282,9 @@ export default {
     // },
     load(url) {
       this.$router.push({ path: url });
+    },
+    loadNamedUrl(name, param) {
+      this.$router.push({ name: name, params: param });
     },
   },
 };

@@ -1,15 +1,15 @@
 <template>
   <div class="app-container">
     <div class="text-center wow fadeInUp" data-wow-delay="0.1s" style="visibility: visible; animation-delay: 0.1s; animation-name: fadeInUp;">
-      <h1 class="section-title ff-secondary text-center text-primary-custom fw-normal">Check Out</h1>
-      <el-alert type="error"><h4>Please note that delivery fees are dependent on your location and is not added to your charges</h4></el-alert>
+      <h1 class="section-title ff-secondary text-center text-primary-custom fw-normal">Checkout</h1>
     </div>
+    <div v-if="userData.id === null" class="callout callout-info">Returning Customer? <router-link :to="{ path: '/login?redirect=/product/check-out'}">Click here to login</router-link> </div>
     <el-row :gutter="20">
       <div v-if="pendingOrder.cart_items.length > 0">
 
         <el-col
-          :lg="8"
-          :md="8"
+          :lg="12"
+          :md="12"
           :sm="12"
           :xs="24"
         >
@@ -150,8 +150,8 @@
           </el-card>
         </el-col>
         <el-col
-          :lg="16"
-          :md="16"
+          :lg="12"
+          :md="12"
           :sm="12"
           :xs="24"
         >
@@ -160,9 +160,7 @@
             <table class="table table-bordered">
               <thead>
                 <tr>
-                  <th>Item</th>
-                  <th>QTY</th>
-                  <th>Rate</th>
+                  <th>Product</th>
                   <th>Subtotal</th>
                 </tr>
               </thead>
@@ -170,26 +168,27 @@
                 <tr v-for="(item, index) in pendingOrder.cart_items" :key="index">
                   <td>
                     <img :src="item.media[0].link" width="100"><br>
-                    <h4>{{ `${item.name} - ${item.selectedColor} - ${item.selectedSize}` }}</h4>
+                    <h4>{{ `${item.name}` }}</h4>
+                    <label> x {{ item.quantity }} {{ item.package_type }} @{{ '₦' + formatNumber(item.rate, 2) }}</label>
                     <!-- <div v-if="item.selected_color">
 
                       Color: <strong :style="`background: ${item.selected_color}; padding: 5px`">{{ item.selected_color }}</strong>
                     </div>
                     <strong>{{ (item.selected_size) ? `Size: ${item.selected_size}` : '' }}</strong> -->
                   </td>
-                  <td>
-                    {{ item.quantity }} {{ item.package_type }}
-                  </td>
-                  <td align="right">
-                    <strong>{{ '₦' + formatNumber(item.rate, 2) }}</strong>
-                  </td>
                   <td align="right">
                     <strong>{{ '₦' + formatNumber(parseFloat(item.rate * item.quantity), 2) }}</strong>
                   </td>
                 </tr>
                 <tr>
-                  <td colspan="4">
-                    <h4>Delivery Mode</h4>
+                  <td align="right"><h4>Total</h4></td>
+                  <td align="right"><h4>{{ '₦' + formatNumber(pendingOrder.amount, 2) }}</h4></td>
+                </tr>
+                <tr>
+                  <td colspan="2">
+                    <h4>Delivery Location</h4>
+
+                    <el-alert type="error">Please note that delivery fees are dependent on your location and will be charged separately</el-alert>
                     <!-- <el-select
                       v-model="selected_location"
                       value-key="id"
@@ -220,13 +219,19 @@
                   </td> -->
                 </tr>
                 <tr>
-                  <td colspan="3" align="right"><h4>Grand Total</h4></td>
-                  <td align="right"><h4>{{ '₦' + formatNumber(pendingOrder.amount, 2) }}</h4></td>
+                  <td colspan="2">
+                    <div v-if="params">
+                      <el-alert type="error">Make your payment directly into any of our bank accounts stated below. Please use your Order Number as the payment reference. Your order will not be shipped until payment is made and confirmed.</el-alert>
+                      <h3 class="section-title-footer ff-secondary text-start text-dark fw-normal mb-4">Pay To</h3>
+                      <span v-html="params.account_details" />
+                    </div>
+                  </td>
                 </tr>
                 <tr>
-                  <td colspan="4" align="right">
-                    <button class="btn btn-success" @click="submitOrder">
-                      Submit Order
+                  <td colspan="2">
+                    <div><el-checkbox v-model="termsAgreed" /> I have read and agreed to the website <label><a @click="showTermsAndConditions = true">Terms and Conditions</a></label></div>
+                    <button class="btn btn-success btn-lg" @click="submitOrder">
+                      Submit Order to generate Order Number
                     </button>
                   </td>
                 </tr>
@@ -235,10 +240,19 @@
             </table>
           </el-card>
         </el-col>
+        <el-dialog
+          title="Terms and Conditions"
+          :visible.sync="showTermsAndConditions"
+        >
+          <div v-if="params">
+            <el-input v-model="params.terms_and_conditions" type="textarea" readonly resize="vertical" :rows="20" />
+          </div>
+        </el-dialog>
       </div>
       <div v-else>
         <el-col :xs="24">
           <h4> You do not have any item in your cart</h4>
+          <button class="btn btn-primary" @click="$router.push({ path: '/product/list' })">Shop Now</button>
         </el-col>
       </div>
     </el-row>
@@ -252,6 +266,8 @@ export default {
   name: 'CheckOut',
   data() {
     return {
+      showTermsAndConditions: false,
+      termsAgreed: false,
       selectedItem: null,
       loading: false,
       checkOutForm: {
@@ -275,6 +291,9 @@ export default {
     },
     userData() {
       return this.$store.getters.userData;
+    },
+    params() {
+      return this.$store.getters.params;
     },
   },
   created() {
@@ -323,6 +342,10 @@ export default {
         alert('Kindly fill all the required fields');
         return false;
       }
+      if (!app.termsAgreed) {
+        app.$alert('You are required to read and agree to our Terms and Condition by clicking on the check box');
+        return false;
+      }
 
       const storeOrder = new Resource('order/store');
       app.loading = true;
@@ -339,6 +362,7 @@ export default {
           };
           app.$store.dispatch('order/setCartItems', []);
           app.$store.dispatch('order/setPendingOrder', pendingOrder);
+          app.$router.push({ path: 'track/order' });
         }
       }).catch(err => {
         console.log(err);

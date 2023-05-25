@@ -34,7 +34,9 @@ class ItemsController extends Controller
     {
         //
         $exclude_item_id = NULL;
-        $relationship = ['media', 'itemStocks', 'discounts', 'category', 'price'];
+        $relationship = ['media', 'itemStocks' => function ($q) {
+            $q->whereRaw('quantity_stocked - sold > 0');
+        }, 'discounts', 'category', 'price'];
         if (isset($request->exclude_item_id) && $request->exclude_item_id !== '' && $request->exclude_item_id !== null) {
             $exclude_item_id = $request->exclude_item_id;
         }
@@ -58,7 +60,9 @@ class ItemsController extends Controller
     public function show(Item $item)
     {
 
-        $item = $item->with(['media', 'itemStocks', 'discounts', 'category', 'price'])->find($item->id);
+        $item = $item->with(['media', 'itemStocks' => function ($q) {
+            $q->whereRaw('quantity_stocked - sold > 0');
+        }, 'discounts', 'category', 'price'])->find($item->id);
         // $item->currency_id = $item->price->currency_id;
         // $item->purchase_price = $item->price->purchase_price;
         // $item->amount = $item->price->amount;
@@ -73,7 +77,9 @@ class ItemsController extends Controller
     public function itemDetails(Request $request)
     {
         $slug = str_replace(' ', '-', strtolower($request->slug));
-        $item = Item::with(['media', 'itemStocks', 'discounts', 'category', 'price'])->where('slug', $slug)->first();
+        $item = Item::with(['media', 'itemStocks' => function ($q) {
+            $q->whereRaw('quantity_stocked - sold > 0');
+        }, 'discounts', 'category', 'price'])->where('slug', $slug)->first();
         // $item->currency_id = $item->price->currency_id;
         // $item->purchase_price = $item->price->purchase_price;
         // $item->amount = $item->price->amount;

@@ -16,6 +16,11 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\UserResource;
 use App\Laravue\Models\User;
+use App\Mail\ResetPassword;
+use App\Models\UserPassword;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 /**
  * Class AuthController
@@ -96,5 +101,45 @@ class AuthController extends Controller
     public function user()
     {
         return new UserResource(Auth::user());
+    }
+    public function recoverPassword(Request $request)
+    {
+
+        $user = User::where('email', $request->email)->first();
+        if ($user) {
+            $token = randomPassword();
+            DB::table('password_resets')->updateOrInsert(
+                ['email' => $user->email, 'token' => $token]
+            );
+
+            // SendQueuedPasswordResetEmailJob::dispatch($user, $token);
+            Mail::to($user)->send(new ResetPassword($user, $token));
+            return response()->json(['message' => 'A password reset token has been sent to your email'], 200);
+        }
+
+        return response()->json(['message' => 'Email Not Found'], 500);
+    }
+    public function confirmPasswordResetToken($token)
+    {
+        $user_token = DB::table('password_resets')->where('token', $token)->first();
+        if ($user_token) {
+            return response()->json(['email' => $user_token->email], 200);
+        }
+        return response()->json(['message' => 'Invalid Reset Link'], 500);
+    }
+    public function resetPassword(Request $request)
+    {
+
+        $user = User::where('email', $request->email)->first();
+        if ($user) {
+
+            $user->password = $request->password;
+            $user->password_status = 'custom';
+            if ($user->save()) {
+                DB::table('password_resets')->where('email', $request->email)->delete();
+            }
+        }
+
+        return response()->json(['message' => 'Password Reset Successful'], 200);
     }
 }

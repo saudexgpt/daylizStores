@@ -8,7 +8,7 @@ import getPageTitle from '@/utils/get-page-title';
 
 NProgress.configure({ showSpinner: false }); // NProgress Configuration
 
-const whiteList = ['/login', '', 'home', '/product', '/about', '/track', '/auth-redirect']; // no redirect whitelist
+const whiteList = ['/login', '', 'home', '/reset-password', '/product', '/about', '/track', '/auth-redirect']; // no redirect whitelist
 
 store.dispatch('items/fetchAllItems');
 store.dispatch('items/fetchCategories');
@@ -60,7 +60,6 @@ router.beforeEach(async(to, from, next) => {
     }
   } else {
     /* has no token*/
-
     if (whiteList.indexOf(to.matched[0] ? to.matched[0].path : '') !== -1) {
       // in the free login whitelist, go directly
       next();

@@ -132,9 +132,8 @@
 
 
   <!--[if !mso]><!-->
-  <token href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet"
-    type="text/css">
-    <!--<![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet" type="text/css">
+  <!--<![endif]-->
 
 </head>
 
@@ -153,7 +152,7 @@
 
           <div class="u-row-container" style="padding: 0px;background-color: transparent">
             <div class="u-row"
-              style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #f1f2f6;">
+              style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #94a5e4;">
               <div
                 style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: transparent;">
                 <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #f1f2f6;"><![endif]-->
@@ -179,7 +178,7 @@
                                 <tr>
                                   <td style="padding-right: 0px;padding-left: 0px;" align="center">
 
-                                    <img align="center" border="0" src="{{ url('images/image-3.png') }}"
+                                    <img align="center" border="0" src="{{ url('images/logo2.png') }}"
                                       alt="Logo" title="Logo"
                                       style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 24%;max-width: 139.2px;"
                                       width="139.2" class="v-src-width v-src-max-width" />
@@ -241,31 +240,6 @@
                         </tbody>
                       </table>
 
-                      {{-- <table id="u_content_image_3" style="font-family:'Montserrat',sans-serif;" role="presentation"
-                        cellpadding="0" cellspacing="0" width="100%" border="0">
-                        <tbody>
-                          <tr>
-                            <td class="v-container-padding-padding"
-                              style="overflow-wrap:break-word;word-break:break-word;padding:15px 10px 40px;font-family:'Montserrat',sans-serif;"
-                              align="left">
-
-                              <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                                <tr>
-                                  <td style="padding-right: 0px;padding-left: 0px;" align="center">
-
-                                    <img align="center" border="0" src="{{ url('images/image-2.jpeg') }}"
-                                      alt="Hero Image" title="Hero Image"
-                                      style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 55%;max-width: 319px;"
-                                      width="319" class="v-src-width v-src-max-width" />
-
-                                  </td>
-                                </tr>
-                              </table>
-
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table> --}}
 
                       <!--[if (!mso)&(!IE)]><!-->
                     </div>
@@ -312,8 +286,15 @@
                                         {{ $user->name }},</span></strong></span></p>
                                 <p style="font-size: 14px; line-height: 190%;"><span
                                     style="font-size: 16px; line-height: 30.4px;">You made a request for a password
-                                    reset.
-                                    Kindly click the token below to continue<br /></span></p>
+                                    reset.<br /></span></p>
+                                <p>
+                                  <span>
+                                    <div>
+                                      Your reset token is:
+                                      <h4>{{ $token }}</h4>
+                                    </div>
+                                  </span>
+                                </p>
                               </div>
 
                             </td>
@@ -331,58 +312,6 @@
               </div>
             </div>
           </div>
-
-
-
-          <div class="u-row-container" style="padding: 0px;background-color: transparent">
-            <div class="u-row"
-              style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;">
-              <div
-                style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: transparent;">
-                <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #ffffff;"><![endif]-->
-
-                <!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;" valign="top"><![endif]-->
-                <div class="u-col u-col-100"
-                  style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;">
-                  <div
-                    style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
-                    <!--[if (!mso)&(!IE)]><!-->
-                    <div
-                      style="height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
-                      <!--<![endif]-->
-
-                      <table style="font-family:'Montserrat',sans-serif;" role="presentation" cellpadding="0"
-                        cellspacing="0" width="100%" border="0">
-                        <tbody>
-                          <tr>
-                            <td class="v-container-padding-padding"
-                              style="overflow-wrap:break-word;word-break:break-word;padding:15px 10px 30px;font-family:'Montserrat',sans-serif;"
-                              align="left">
-
-                              <!--[if mso]><style>.v-button {background: transparent !important;}</style><![endif]-->
-                              <div>
-                                <a href="{{ env('FRONTEND_URL') }}/reset-password/{{ $token }}"
-                                  target="_blank">{{ env('FRONTEND_URL') }}/reset-password/{{ $token }}
-                                </a>
-                                <!--[if mso]></center></v:roundrect><![endif]-->
-                              </div>
-
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-
-                      <!--[if (!mso)&(!IE)]><!-->
-                    </div>
-                    <!--<![endif]-->
-                  </div>
-                </div>
-                <!--[if (mso)|(IE)]></td><![endif]-->
-                <!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]-->
-              </div>
-            </div>
-          </div>
-
 
 
           <div class="u-row-container" style="padding: 0px;background-color: transparent">

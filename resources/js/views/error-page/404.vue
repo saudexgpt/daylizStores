@@ -6,8 +6,7 @@
         <img class="pic-404__child left" src="/images/404_cloud.png" alt="404">
         <img class="pic-404__child mid" src="/images/404_cloud.png" alt="404">
         <img class="pic-404__child right" src="/images/404_cloud.png" alt="404">
-      </div>
-      <div class="bullshit">
+
         <div class="bullshit__oops">
           OOPS!
         </div>
@@ -50,7 +49,7 @@ export default {
   .pic-404 {
     position: relative;
     float: left;
-    width: 60%;
+    width: 90%;
     overflow: hidden;
     &__parent {
       width: 100%;

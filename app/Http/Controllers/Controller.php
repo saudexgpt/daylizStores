@@ -111,6 +111,7 @@ class Controller extends BaseController
         $company_contact = $this->settingValue('company_contact');
         $currency = $this->settingValue('currency');
         $account_details = $this->settingValue('account_details');
+        $terms_and_conditions = $this->settingValue('terms_and_conditions');
 
         // $product_expiry_date_alert = $this->settingValue('product_expiry_date_alert_in_months');
         $order_statuses = ['Pending', 'On Transit', 'Delivered', 'Cancelled'];
@@ -118,7 +119,7 @@ class Controller extends BaseController
         $all_roles = Role::orderBy('name')->select('name')->get();
         //$customer_types = CustomerType::get();
         return response()->json([
-            'params' => compact('all_locations', 'company_name', 'company_contact', 'warehouses', 'items', 'currency', 'genders', 'all_roles', 'order_statuses', 'account_details')
+            'params' => compact('all_locations', 'company_name', 'company_contact', 'warehouses', 'items', 'currency', 'genders', 'all_roles', 'order_statuses', 'account_details', 'terms_and_conditions')
         ]);
     }
     public function settingValue($key)
