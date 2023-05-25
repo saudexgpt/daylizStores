@@ -110,7 +110,7 @@ class OrdersController extends Controller
         $prefix = 'DLZ';
         $order_items = json_decode(json_encode($request->cart_items));
         $order = new Order();
-        $order->location       = $request->location;
+        $order->location       = $request->location[0];
         $order->user_id         = $user->id;
         // $order->subtotal            = $request->subtotal;
         // $order->discount            = $request->discount;
