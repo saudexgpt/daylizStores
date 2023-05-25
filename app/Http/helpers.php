@@ -1058,18 +1058,18 @@ function formatUniqNo($no)
 }
 function mainDomainPublicPath($folder = null)
 {
-    return "https://edu-drive.com/" . $folder;
+    return "https://daylizstores.com/" . $folder;
 }
 function subdomainPublicPath($folder = null)
 {
-    return "/home/edudrive/api.edu-drive.com/storage/" . $folder;
+    return "/home/daylizst/public_html/storage" . $folder;
 }
 
 function portalPulicPath($folder = null)
 {
-    return public_path($folder);
+    //return public_path($folder);
     // return storage_path('app/public/' . $folder);
-    // return "/home/edudrive/api.edu-drive.com/storage/" . $folder;
+    return "/home/daylizst/public_html/storage/" . $folder;
 }
 
 function folderSize($dir)

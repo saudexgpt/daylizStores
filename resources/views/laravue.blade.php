@@ -18,7 +18,6 @@
   <link rel="icon" type="image/png" sizes="192x192" href="/favicon.ico">
   <link rel="manifest" href="/favicon/manifest.json">
   <meta name="msapplication-TileColor" content="#ffffff">
-  <meta name="theme-color" content="#ffffff">
   <!--public page styles-->
   <link href="{{ asset('css/app.css') }}" type="text/css" rel="stylesheet" />
   {{-- <link href="{{ mix('css/app.css') }}" type="text/css" rel="stylesheet" /> --}}
