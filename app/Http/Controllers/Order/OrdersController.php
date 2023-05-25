@@ -154,10 +154,10 @@ class OrdersController extends Controller
             $order_item_obj->order_id = $order->id;
             $order_item_obj->item_id = $order_item->id;
             $product_name = $order_item->name;
-            if ($order_item->selectedColor !== NULL && $order_item->selectedColor !== '') {
+            if (isset($order_item->selectedColor) && $order_item->selectedColor !== '') {
                 $product_name .= '-' . $order_item->selectedColor;
             }
-            if ($order_item->selectedSize !== NULL && $order_item->selectedSize !== '') {
+            if (isset($order_item->selectedSize) && $order_item->selectedSize !== '') {
                 $product_name .= '-' . $order_item->selectedSize;
             }
             $order_item_obj->product_name = $product_name;
