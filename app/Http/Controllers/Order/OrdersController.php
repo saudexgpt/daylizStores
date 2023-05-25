@@ -40,7 +40,7 @@ class OrdersController extends Controller
             $condition2 = ['order_status' => $status];
         }
         $orders = Order::with([
-            'location', 'customer', 'orderItems.item'
+            'customer', 'orderItems.item'
         ])->where($condition)->where($condition2)->paginate($request->limit);
         return response()->json(compact('orders'));
     }
@@ -177,7 +177,7 @@ class OrdersController extends Controller
         $order_number = $request->order_number;
         $user = User::where('phone', $username)->orWhere('email', $username)->first();
         if ($user) {
-            $order = Order::with('location', 'customer', 'orderItems.item')->where(['user_id' => $user->id, 'order_number' => $order_number])->first();
+            $order = Order::with('customer', 'orderItems.item')->where(['user_id' => $user->id, 'order_number' => $order_number])->first();
             if ($order) {
                 $message = 'success';
                 return response()->json(compact('message', 'order'), 200);

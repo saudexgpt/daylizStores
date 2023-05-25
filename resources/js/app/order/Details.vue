@@ -60,15 +60,15 @@
               <!-- <td>{{ (order_item.tax * 100).toFixed(2) }}%</td> -->
               <td align="right">{{ currency + formatNumber(order_item.total, 2) }}</td>
             </tr>
-            <tr>
+            <!-- <tr>
               <td colspan="2">
                 <label>Shipping Cost:</label>
-                [{{ order.location }}]
+                {{ order.location }}
               </td>
               <td align="right">
                 {{ '₦' + formatNumber(order.delivery_cost, 2) }}
               </td>
-            </tr>
+            </tr> -->
             <tr>
               <td colspan="2" align="right"><label>Grand Total</label></td>
               <td align="right"><label style="color: green">{{ currency + formatNumber(order.total, 2).toLocaleString() }}</label></td>
