@@ -1062,14 +1062,14 @@ function mainDomainPublicPath($folder = null)
 }
 function subdomainPublicPath($folder = null)
 {
-    return "/home/daylizst/public_html/storage" . $folder;
+    return "/home/daylizst/public_html" . $folder;
 }
 
 function portalPulicPath($folder = null)
 {
     //return public_path($folder);
     // return storage_path('app/public/' . $folder);
-    return "/home/daylizst/public_html/storage/" . $folder;
+    return "/home/daylizst/public_html" . $folder;
 }
 
 function folderSize($dir)
