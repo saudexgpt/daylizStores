@@ -106,11 +106,15 @@ class OrdersController extends Controller
     public function store(Request $request)
     {
         //
+        $location = '';
+        foreach ($request->location as $loc) {
+            $location .= $loc . '/';
+        }
         $user = $this->registerCustomer($request);
         $prefix = 'DLZ';
         $order_items = json_decode(json_encode($request->cart_items));
         $order = new Order();
-        $order->location       = $request->location[0];
+        $order->location       = $location;
         $order->user_id         = $user->id;
         // $order->subtotal            = $request->subtotal;
         // $order->discount            = $request->discount;
