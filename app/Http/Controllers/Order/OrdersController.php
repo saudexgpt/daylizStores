@@ -129,7 +129,7 @@ class OrdersController extends Controller
             $order->order_number = $prefix . $order->id . randomNumber(); //$this->getInvoiceNo($prefix, $order->id);
             $order->save();
 
-            Mail::to($user)->send(new OrderDetails($user, $order));
+            // Mail::to($user)->send(new OrderDetails($user, $order));
             $title = "New Order Made";
             $description = "New order ($order->order_number) was created by: $user->name ($user->phone)";
             $this->logUserActivity($title, $description);
@@ -138,7 +138,7 @@ class OrdersController extends Controller
             //create items ordered for
             $this->createOrderItems($order, $order_items);
         }
-        return response()->json(['message' => 'success', 'order_no' => $order->order_number], 200);
+        return response()->json(['order_details' => $order], 200);
     }
 
     private function createOrderHistory($order, $description)

@@ -127,74 +127,80 @@
         </div>
       </div>
       <!-- /.col -->
-      <div v-if="canUpdate" class="col-xs-12 col-sm-6 col-md-6">
-        <div v-if="order.payment_status === 'paid' && order.order_status === 'Pending'">
-          <a
-            class="btn btn-primary"
-            @click="form.status = 'On Transit'; changeOrderStatus()"
-          > <i class="el-icon-printer" /> Send to Customer</a>
-          <el-alert
-            :closable="false"
-            type="error"
-          >This should be done only when customer has paid in full.
-          </el-alert>
-        </div>
-        <div v-else-if="order.payment_status === 'paid' && order.order_status === 'On Transit'">
-          <a
-            class="btn btn-success"
-            @click="form.status = 'Delivered'; changeOrderStatus()"
-          >Click to Mark Goods as Delivered</a>
-          <el-alert
-            :closable="false"
-            type="error"
-          >This should be done only when order have been delivered successfully to the customer
-          </el-alert>
-        </div>
-        <div v-if="order.order_status === 'Pending' || order.order_status === 'On Transit'">
-          <a
-            class="btn btn-danger"
-            @click="form.status = 'Cancelled'; changeOrderStatus()"
-          >Click to Cancel Order</a>
-          <el-alert
-            :closable="false"
-            type="error"
-          >This should be done only when order is no longer needed by the customer
-          </el-alert>
-        </div>
-        <div v-if="order.order_status === 'Delivered'">
-          <div v-if="order.payment_status === 'paid'">
-            <h1>Paid</h1>
+      <div class="col-xs-12 col-sm-6 col-md-6">
+        <div v-if="canUpdate">
+          <div v-if="order.payment_status === 'paid' && order.order_status === 'Pending'">
+            <a
+              class="btn btn-primary"
+              @click="form.status = 'On Transit'; changeOrderStatus()"
+            > <i class="el-icon-printer" /> Send to Customer</a>
+            <el-alert
+              :closable="false"
+              type="error"
+            >This should be done only when customer has paid in full.
+            </el-alert>
           </div>
-          <div v-else>
-            <h1>Payment Pending</h1>
+          <div v-else-if="order.payment_status === 'paid' && order.order_status === 'On Transit'">
+            <a
+              class="btn btn-success"
+              @click="form.status = 'Delivered'; changeOrderStatus()"
+            >Click to Mark Goods as Delivered</a>
+            <el-alert
+              :closable="false"
+              type="error"
+            >This should be done only when order have been delivered successfully to the customer
+            </el-alert>
+          </div>
+          <div v-if="order.order_status === 'Pending' || order.order_status === 'On Transit'">
+            <a
+              class="btn btn-danger"
+              @click="form.status = 'Cancelled'; changeOrderStatus()"
+            >Click to Cancel Order</a>
+            <el-alert
+              :closable="false"
+              type="error"
+            >This should be done only when order is no longer needed by the customer
+            </el-alert>
+          </div>
+          <div v-if="order.order_status === 'Delivered'">
+            <div v-if="order.payment_status === 'paid'">
+              <h1>Paid</h1>
+            </div>
+            <div v-else>
+              <h1>Payment Pending</h1>
+            </div>
           </div>
         </div>
-      </div>
-      <div v-else-if="order.order_status === 'Delivered'" class="col-xs-12 col-sm-6 col-md-6">
-        <h4>Kindly rate our product</h4>
-        <table class="table table-bordered table-striped">
-          <thead>
-            <tr>
-              <th>Product</th>
-              <th>Rate</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(order_item, index) in order.order_items" :key="index">
-              <td>{{ order_item.item.name }}</td>
-              <td>
-                <el-rate
-                  v-model="order_item.star"
-                  @change="rateProduct($event, order_item.item_id, order.user_id, 'star')"
-                /><br>
-                <el-input v-model="order_item.comment" type="textarea" @blur="rateProduct($event.target.value, order_item.item_id, order.user_id, 'comment')" />
-              </td>
-            </tr>
-            <tr>
-              <td align="right" colspan="2"><el-button type="success" round @click="appreciate">Submit</el-button></td>
-            </tr>
-          </tbody>
-        </table>
+        <div v-else-if="order.order_status === 'Delivered'">
+          <h4>Kindly rate our product</h4>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Rate</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(order_item, index) in order.order_items" :key="index">
+                <td>{{ order_item.item.name }}</td>
+                <td>
+                  <el-rate
+                    v-model="order_item.star"
+                    @change="rateProduct($event, order_item.item_id, order.user_id, 'star')"
+                  /><br>
+                  <el-input v-model="order_item.comment" type="textarea" @blur="rateProduct($event.target.value, order_item.item_id, order.user_id, 'comment')" />
+                </td>
+              </tr>
+              <tr>
+                <td align="right" colspan="2"><el-button type="success" round @click="appreciate">Submit</el-button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div v-if="!canUpdate && order.payment_status === 'pending'">
+          <el-alert type="error">Make your payment directly into any of our bank accounts stated below. Please use your Order Number as the payment reference. Your order will not be shipped until payment is made and confirmed.</el-alert>
+          <span v-html="params.account_details" />
+        </div>
       </div>
       <!-- /.col -->
     </div>
@@ -238,6 +244,11 @@ export default {
         payment_status: 'pending',
       },
     };
+  },
+  computed: {
+    params() {
+      return this.$store.getters.params;
+    },
   },
   created() {
     this.form.status = this.order.order_status;

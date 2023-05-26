@@ -43,8 +43,8 @@ export default {
         { url: '/images/slider1.png', title: 'Household Items', description: 'Get your quality household items at affordable prices' },
         { url: '/images/slider2.png', title: 'Souvenirs', description: 'Varieties of gift items and souvenirs at affordable prices' },
         { url: '/images/slider6.png', title: 'Kiddies', description: 'Varieties of quality products for kids' },
-        { url: '/images/slider4.png', title: 'Men\'s Foot Wears', description: 'Quality foot wears for men at affordable prices' },
-        { url: '/images/slider5.png', title: 'Ladies\' Foot Wears', description: 'Quality foot wears for ladies at affordable prices' },
+        { url: '/images/slider4.png', title: 'Men\'s Fashion', description: 'Quality products for men at affordable prices' },
+        { url: '/images/slider5.png', title: 'Ladies\' Fashion', description: 'Quality products for ladies at affordable prices' },
         { url: '/images/slider3.png', title: 'Buy Online', description: 'You are just a click away from grabbing your desired product' },
       ],
     };

@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div v-loading="loading" class="app-container">
     <div class="text-center wow fadeInUp" data-wow-delay="0.1s" style="visibility: visible; animation-delay: 0.1s; animation-name: fadeInUp;">
       <h1 class="section-title ff-secondary text-center text-primary-custom fw-normal">Checkout</h1>
     </div>
@@ -137,7 +137,7 @@
           :sm="12"
           :xs="24"
         >
-          <el-card v-loading="loading">
+          <el-card>
             <span slot="header">Order List</span>
             <table class="table table-bordered">
               <thead>
@@ -196,8 +196,38 @@
             <el-input v-model="params.terms_and_conditions" type="textarea" readonly resize="vertical" :rows="20" />
           </div>
         </el-dialog>
+        <el-dialog
+          :visible="showOrderSuccessMessage"
+          title="Order Placed Successfully"
+          :close-on-click-modal="false"
+          @close="showOrderSuccessMessage = false"
+        >
+          <div>
+            <div style="border: dashed 2px #47cf2c; padding: 10px; color: #47cf2c"><label>Thank you. We have received your order</label></div>
+            <hr>
+            <label>
+              Order Number: <h3>{{ orderDetails.order_number }}</h3>
+            </label>
+            <hr>
+            <label>
+              Order Date: {{ moment(orderDetails.created_at).format('ll') }}
+            </label>
+            <hr>
+            <label>
+              Total Amount: {{ '₦' + formatNumber(orderDetails.total, 2) }}
+            </label>
+            <hr>
+            <label>
+              Payment Method: {{ orderDetails.payment_method }}
+            </label>
+            <hr>
+            <div>Please use your <label>Order Number</label> as your payment reference and for Tracking</div>
+            <hr>
+            <button class="btn btn-primary" @click="$router.push({ path: '/track/order' })">Track Order Here</button>
+          </div>
+        </el-dialog>
       </div>
-      <div v-else>
+      <div v-else align="center">
         <el-col :xs="24">
           <h4> You do not have any item in your cart</h4>
           <button class="btn btn-primary" @click="$router.push({ path: '/product/list' })">Shop Now</button>
@@ -207,6 +237,7 @@
   </div>
 </template>
 <script>
+import moment from 'moment';
 import 'mdbvue/lib/css/mdb.min.css';
 import { formatNumber } from '@/utils/index';
 import Resource from '@/api/resource';
@@ -215,6 +246,8 @@ export default {
   data() {
     return {
       showTermsAndConditions: false,
+      showOrderSuccessMessage: false,
+      orderDetails: { order_number: '', created_at: '', total: '', payment_method: '' },
       termsAgreed: false,
       selectedItem: null,
       loading: false,
@@ -265,6 +298,7 @@ export default {
     }, 3000);
   },
   methods: {
+    moment,
     formatNumber,
     setForm() {
       const app = this;
@@ -339,20 +373,46 @@ export default {
       const storeOrder = new Resource('order/store');
       app.loading = true;
       storeOrder.store(form).then(response => {
-        if (response.message === 'success') {
-          app.$alert('Your order is placed successfully. Order Number is: ' + response.order_no + ' You can use it to track this order');
-          this.$alert('A message is sent to your email <br>Order Number is: ' + response.order_no + '<br> You can use it to track this order', 'Order Placed Successfully', {
-            dangerouslyUseHTMLString: true,
-          });
-          app.loading = false;
-          const pendingOrder = {
-            amount: 0,
-            cart_items: [],
-          };
-          app.$store.dispatch('order/setCartItems', []);
-          app.$store.dispatch('order/setPendingOrder', pendingOrder);
-          app.$router.push({ path: '/track/order' });
-        }
+        app.loading = false;
+        const orderDetails = response.order_details;
+        this.$alert(`<div align="center">
+            <div style="border: dashed 2px #47cf2c; padding: 10px; color: #47cf2c"><label>Thank you. We have received your order</label></div>
+            <table class="table table-bordered">
+              <tbody>
+                <tr>
+                  <td align="center">
+                    <label>
+                      Order Number: <h3>${orderDetails.order_number}</h3>
+                    </label>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center">
+                    <label>
+                      Order Date: <br>${moment(orderDetails.created_at).format('ll')}
+                    </label>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center">
+                    <label>
+                      Total Amount: <br>${'₦' + formatNumber(orderDetails.total, 2)}
+                    </label>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div>Please use your <label>Order Number</label> as your payment reference and for Tracking</div>
+          </div>`, 'Order Placed Successfully', {
+          dangerouslyUseHTMLString: true,
+        });
+        const pendingOrder = {
+          amount: 0,
+          cart_items: [],
+        };
+        app.$store.dispatch('order/setCartItems', []);
+        app.$store.dispatch('order/setPendingOrder', pendingOrder);
+        app.$router.push({ path: '/track/order' });
       }).catch(err => {
         console.log(err);
         alert('An error occured');

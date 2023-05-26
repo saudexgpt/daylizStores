@@ -19,7 +19,8 @@
               <router-link :to="{name: 'ProductDetails', params: { slug: item.slug}}">
                 <small>{{ item.category.name }}</small>
                 <div class="item-name">{{ item.name }}</div>
-                <img :src="item.media[0].thumbnail" class="item-image">
+                <img v-if="item.media.length > 0" :src="item.media[0].thumbnail" class="item-image">
+                <img v-else src="/images/no-image.jpeg" class="item-image">
               </router-link>
             </div>
             <span class="price-box">

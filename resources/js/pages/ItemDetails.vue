@@ -206,7 +206,7 @@ export default {
           app.selectedItem.selectedColor = '';
           app.selectedItem.selectedSize = '';
           if (response.item) {
-            app.selectedImg = response.item.media[0].link;
+            app.selectedImg = (response.item.media.length > 0) ? response.item.media[0].link : '/images/no-image.jpeg';
 
             app.setOtherItemDescription();
           }
