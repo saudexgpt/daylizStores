@@ -109,8 +109,13 @@ class Controller extends BaseController
         //     $constraint->aspectRatio();
         // })->save($thumbnail_path . '/' . $name);
         //keep original file
+        $imgFileOriginal = Image::make($image->getRealPath());
         $destinationPath = portalPulicPath($folder);
-        $image->move($destinationPath, $name);
+        $imgFileOriginal->resize(600, null, function ($constraint) {
+            $constraint->aspectRatio();
+        })->save($destinationPath . '/' . $name);
+
+        // $image->move($destinationPath, $name);
 
         $media = new ItemMedia();
         $media->link = $folder . '/' . $name;
