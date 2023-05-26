@@ -22,7 +22,8 @@
           <div style="cursor: pointer;" @click="loadPage('ProductDetails', { slug: stock.item.slug })">
 
             <el-col :lg="8" :md="8">
-              <img :src="stock.item.media[0].thumbnail" class="item-image">
+              <img v-if="stock.item.media.length > 0" :src="stock.item.media[0].thumbnail" class="item-image">
+              <img v-else src="/images/no-image.jpeg" class="item-image">
             </el-col>
             <el-col :lg="16" :md="16">
               <span>

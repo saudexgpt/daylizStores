@@ -104,9 +104,10 @@ class Controller extends BaseController
 
         // save thumbnail image
         $imgFile = Image::make($image->getRealPath());
-        $imgFile->resize(250, null, function ($constraint) {
-            $constraint->aspectRatio();
-        })->save($thumbnail_path . '/' . $name);
+        $imgFile->resize(250, 152)->save($thumbnail_path . '/' . $name);
+        // $imgFile->resize(250, 152, function ($constraint) {
+        //     $constraint->aspectRatio();
+        // })->save($thumbnail_path . '/' . $name);
         //keep original file
         $destinationPath = portalPulicPath($folder);
         $image->move($destinationPath, $name);
