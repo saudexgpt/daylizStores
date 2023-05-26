@@ -62,19 +62,6 @@
     <div v-if="items.length < 1 && load === false">
       <error-404 />
     </div>
-    <el-dialog
-      v-if="selectedItem !== null"
-      :title="selectedItem.name"
-      :visible.sync="dialogVisible"
-    >
-      <div class="text-center">
-        <img :src="selectedItem.media[0].link" style="width: 80%; border-radius: 50%">
-        <h3>{{ '₦' + formatNumber(selectedItem.price.amount, 2) }}</h3>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="danger" @click="addItemToCart(selectedItem); dialogVisible = false">Add to Cart</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 <script>
