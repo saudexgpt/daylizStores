@@ -41,7 +41,7 @@ class OrdersController extends Controller
         }
         $orders = Order::with([
             'customer', 'orderItems.item', 'orderItems.stock'
-        ])->where($condition)->where($condition2)->paginate($request->limit);
+        ])->where($condition)->where($condition2)->orderBy('id', 'DESC')->paginate($request->limit);
         return response()->json(compact('orders'));
     }
 
@@ -129,7 +129,7 @@ class OrdersController extends Controller
             $order->order_number = $prefix . $order->id . randomNumber(); //$this->getInvoiceNo($prefix, $order->id);
             $order->save();
 
-            // Mail::to($user)->send(new OrderDetails($user, $order));
+            Mail::to($user)->send(new OrderDetails($user, $order));
             $title = "New Order Made";
             $description = "New order ($order->order_number) was created by: $user->name ($user->phone)";
             $this->logUserActivity($title, $description);

@@ -33,21 +33,25 @@
           </div>
           <br>
           <div v-if="stock_details.length > 0">
-            <span v-if="available_details.length > 0">
-              <span><label>Sizes: </label></span>
-            </span>
-            <span v-for="(stock, index) in stock_details" :key="index">
-              <span v-if="stock.size !== null">
-                <span style="border: solid 1px #cccccc; cursor: pointer; padding: 5px"><span @click="productForCart(stock, stock.size)"><i v-if="selectedDetail === stock.size" class="el-icon-check" /> {{ stock.size }}</span></span>
-              </span>
-              <div>
-                <h4>
-                  <el-badge v-if="parseInt(stock.quantity_stocked - stock.sold) > 0" :value="`${parseInt(stock.quantity_stocked - stock.sold)} in stock`" type="success" />
-                  <el-badge v-else value="Out of Stock" type="danger" />
-                </h4>
-
-              </div>
-            </span>
+            <div v-if="available_details.length > 0">
+              <label>Sizes: </label>
+            </div>
+            <table class="table table-bordered">
+              <tbody>
+                <tr v-for="(stock, index) in stock_details" :key="index" style="cursor: pointer;">
+                  <td @click="productForCart(stock, stock.size)">
+                    <span v-if="stock.size !== null">
+                      <span>{{ stock.size }}</span>
+                    </span>
+                    <span>
+                      <el-badge v-if="parseInt(stock.quantity_stocked - stock.sold) > 0" :value="`${parseInt(stock.quantity_stocked - stock.sold)} in stock`" type="success" />
+                      <el-badge v-else value="Out of Stock" type="danger" />
+                    </span>
+                    <span><i v-if="selectedProductStock.id === stock.id" class="el-icon-check" /></span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
             <hr>
             <el-button @click="addItemToWishlist(selectedItem)"><i class="fas fa-heart" /> Add to wishlist</el-button>
             <p />
@@ -332,7 +336,7 @@ export default {
       });
       app.available_details = details;
       if (details.length > 0) {
-        app.selectedDetail = details[0];
+        app.selectedSize = details[0];
       }
       app.productForCart(stock_details[0], app.selectedSize);
       // app.available_sizes = sizes;
@@ -340,7 +344,7 @@ export default {
     productForCart(stock, size) {
       const app = this;
       app.selectedProductStock = stock;
-      app.selectedSize = size;
+      app.selectedSize = (size !== null) ? size : '';
     },
 
   },
