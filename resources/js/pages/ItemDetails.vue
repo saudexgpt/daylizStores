@@ -24,27 +24,37 @@
           <small>{{ selectedItem.category.name }}</small>
           <h3>{{ selectedItem.name }}</h3>
           <p>{{ selectedItem.description }}</p>
+          <h2>{{ '₦' + formatNumber(selectedItem.price.amount, 2) }}</h2>
           <div v-if="available_colors.length > 0">
-            <strong>Colors:</strong>
-            <span style="border: solid 1px #cccccc; padding: 5px 10px 5px 10px; margin: 5px; cursor: pointer">
-              <span @click="setExtraDetails('', 'selectedColor')">X</span>
-            </span>
-            <span v-for="(color, index) in available_colors" :key="index" :style="`background: ${color}; padding: 5px 15px 5px 15px; margin: 5px; cursor: pointer`" @click="setExtraDetails(color, 'selectedColor')">
-              <span><i v-if="selectedColor === color" class="el-icon-check" /></span>
+            <span><label>Colors: </label></span>
+            <span v-for="(color, index) in available_colors" :key="index">
+              <span :style="`background: ${color}; padding: 5px 15px 5px 15px; margin: 5px; cursor: pointer; border-radius: 30px;`" @click="setItemDetailsForCart(color);"><i v-if="selectedColor === color" class="el-icon-check" /></span> {{ color }}
             </span>
           </div>
           <br>
-          <div v-if="available_sizes.length > 0">
-            <strong>Sizes: </strong>
-            <span v-for="(size, index) in available_sizes" :key="index" style="border: solid 1px #cccccc; cursor: pointer; padding: 5px"><span @click="setExtraDetails(size, 'selectedSize')"><i v-if="selectedSize === size" class="el-icon-check" /> {{ size }}</span></span>
-          </div>
-          <div>
+          <div v-if="stock_details.length > 0">
+            <span v-if="available_details.length > 0">
+              <span><label>Sizes: </label></span>
+            </span>
+            <span v-for="(stock, index) in stock_details" :key="index">
+              <span v-if="stock.size !== null">
+                <span style="border: solid 1px #cccccc; cursor: pointer; padding: 5px"><span @click="productForCart(stock, stock.size)"><i v-if="selectedDetail === stock.size" class="el-icon-check" /> {{ stock.size }}</span></span>
+              </span>
+              <div>
+                <h4>
+                  <el-badge v-if="parseInt(stock.quantity_stocked - stock.sold) > 0" :value="`${parseInt(stock.quantity_stocked - stock.sold)} in stock`" type="success" />
+                  <el-badge v-else value="Out of Stock" type="danger" />
+                </h4>
+
+              </div>
+            </span>
             <hr>
             <el-button @click="addItemToWishlist(selectedItem)"><i class="fas fa-heart" /> Add to wishlist</el-button>
+            <p />
             <!-- <el-button @click="addItemToComparedItems(selectedItem)"><i class="fas fa-random" /> Compare</el-button> -->
-            <h2>{{ '₦' + formatNumber(selectedItem.price.amount, 2) }}</h2>
             <el-input-number v-model="quantity" :min="1" />
-            <el-button type="primary" @click="addItemToCart(selectedItem)"><i class="el-icon-shopping-cart-2" /> Add to Cart</el-button>
+            <el-button :disabled="selectedItem.item_stocks.length < 1" type="primary" @click="addItemToCart(selectedItem)"><i class="el-icon-shopping-cart-2" /> Add to Cart</el-button>
+            <el-alert v-if="showQuantityOverflowError" type="error">Quantity is more than stock</el-alert>
           </div>
         </el-col>
       </el-row>
@@ -138,12 +148,15 @@ export default {
         selectedSize: '',
       },
       selectedImg: '',
-      dialogVisible: false,
+      showQuantityOverflowError: false,
       quantity: 1,
       available_colors: [],
-      available_sizes: [],
+      available_details: [],
+      stock_details: [],
       selectedColor: '',
       selectedSize: '',
+      selectedDetail: '',
+      selectedProductStock: '',
       reviews: [],
       totalReviews: 0,
       overallReview: 0,
@@ -160,22 +173,68 @@ export default {
   },
   methods: {
     formatNumber,
-    setExtraDetails(value, field) {
+    quantityOverflow(quantity){
       const app = this;
-      app.selectedItem[field] = value;
-      app[field] = value;
+      app.showQuantityOverflowError = false;
+      const stock = app.selectedProductStock;
+      const stockBalance = parseInt(stock.quantity_stocked - stock.sold);
+      if (quantity > stockBalance) {
+        app.showQuantityOverflowError = true;
+        return true;
+      }
+      return false;
+    },
+    calculateDiscounts(item, quantity){
+      const standardAmount = item.price.amount;
+      item.rate = standardAmount;
+      item.standardAmount = standardAmount;
+      let price = parseInt(quantity * standardAmount);
+      let discountedAmount = standardAmount;
+      if (item.discounts.length > 0) {
+        item.discounts.forEach(discount => {
+          const moq = discount.minimum_order_quantity;
+          if (quantity >= moq) {
+            discountedAmount = discount.amount;
+            item.rate = discountedAmount;
+            price = parseInt(quantity * discountedAmount);
+          }
+        });
+      }
+      item.subTotal = price;
+      return item;
     },
     addItemToCart(item) {
-      item.quantity = (this.quantity > 0) ? this.quantity : 1;
-      this.$store.dispatch('order/addItemToCart', item);
-      this.$notify({
+      const app = this;
+      const quantity = (app.quantity > 0) ? app.quantity : 1;
+      const stock = app.selectedProductStock;
+      const stockBalance = parseInt(stock.quantity_stocked - stock.sold);
+      if (app.quantityOverflow(quantity)) {
+        item.quantity = stockBalance;
+        return false;
+      }
+      item = app.calculateDiscounts(item, quantity);
+      const new_name = `${item.name} - ${app.selectedColor} - ${app.selectedSize}`;
+      const param = {
+        id: item.id,
+        stock_id: stock.id,
+        quantity: quantity,
+        media: item.media,
+        rate: item.rate,
+        subTotal: item.subTotal,
+        standardAmount: item.standardAmount,
+        name: new_name,
+      };
+      app.$store.dispatch('order/addItemToCart', param);
+      app.$notify({
         title: `${item.name} is added to cart`,
       });
     },
     addItemToWishlist(item) {
+      const app = this;
       item.quantity = 1;
-      this.$store.dispatch('order/addItemToWishlist', item);
-      this.$notify({
+      item.new_name = `${item.name} - ${app.selectedColor} - ${app.selectedSize}`;
+      app.$store.dispatch('order/addItemToWishlist', item);
+      app.$notify({
         title: `${item.name} is added to wish list`,
       });
     },
@@ -242,18 +301,46 @@ export default {
     setOtherItemDescription() {
       const app = this;
       const colors = [];
-      const sizes = [];
       const itemStocks = app.selectedItem.item_stocks;
       itemStocks.forEach(stock => {
         if (stock.color !== null) {
           colors.push(stock.color);
         }
+      });
+
+      const uniqueColors = [...new Set(colors)];
+      app.available_colors = uniqueColors;
+      if (uniqueColors.length > 0) {
+        app.selectedColor = uniqueColors[0];
+        app.setItemDetailsForCart(app.selectedColor);
+      }
+    },
+    setItemDetailsForCart(color) {
+      const app = this;
+      app.showQuantityOverflowError = false;
+      const details = [];
+      const itemStocks = app.selectedItem.item_stocks;
+      const stock_details = itemStocks.filter(stock => stock.color === color);
+      app.stock_details = stock_details;
+      app.selectedColor = color;
+
+      stock_details.forEach(stock => {
         if (stock.size !== null) {
-          sizes.push(stock.size);
+          details.push(stock.size);
+          app.selectedSize = stock.size;
         }
       });
-      app.available_colors = colors;
-      app.available_sizes = sizes;
+      app.available_details = details;
+      if (details.length > 0) {
+        app.selectedDetail = details[0];
+      }
+      app.productForCart(stock_details[0], app.selectedSize);
+      // app.available_sizes = sizes;
+    },
+    productForCart(stock, size) {
+      const app = this;
+      app.selectedProductStock = stock;
+      app.selectedSize = size;
     },
 
   },

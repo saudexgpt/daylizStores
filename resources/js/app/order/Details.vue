@@ -32,7 +32,8 @@
         <!-- <label>Order Details</label><br> -->
         <h3>Order No.: {{ order.order_number }}</h3><br>
         <label>Date:</label> {{ moment(order.created_at).format('MMMM Do YYYY, h:mm:ss a') }}<br>
-        <label>Pickup Area: </label> {{ order.location }}
+        <label>Pickup Area: </label> {{ order.location }}<br>
+        <label>Extra Note: </label> {{ order.notes }}
       </div>
       <!-- /.col -->
     </div>
@@ -46,8 +47,8 @@
           <thead>
             <tr>
               <th>Product</th>
-              <th>Quantity</th>
-              <!-- <th>Rate</th> -->
+              <th>Order Quantity</th>
+              <th v-if="canUpdate && order.order_status === 'Pending'">In Stock Quantity</th>
               <!-- <th>Tax</th> -->
               <th>Amount</th>
             </tr>
@@ -56,6 +57,7 @@
             <tr v-for="(order_item, index) in order.order_items" :key="index">
               <td>{{ order_item.product_name }}</td>
               <td>{{ order_item.quantity }}</td>
+              <td v-if="canUpdate && order.order_status === 'Pending'">{{ order_item.stock.quantity_stocked - order_item.stock.sold }}</td>
               <!-- <td>{{ order_item.item.price.amount }}</td> -->
               <!-- <td>{{ (order_item.tax * 100).toFixed(2) }}%</td> -->
               <td align="right">{{ currency + formatNumber(order_item.total, 2) }}</td>
@@ -74,15 +76,15 @@
               <td align="right"><label style="color: green">{{ currency + formatNumber(order.total, 2).toLocaleString() }}</label></td>
             </tr>
             <tr>
-              <td colspan="3" align="right"><label>In Words: {{ inWords(order.total).toUpperCase() + ' NAIRA ONLY' }}</label></td>
+              <td colspan="4" align="right"><label>In Words: {{ inWords(order.total).toUpperCase() + ' NAIRA ONLY' }}</label></td>
             </tr>
             <tr v-if="!canUpdate">
-              <td colspan="3" align="right">
+              <td colspan="4" align="right">
                 <label>Payment Status: {{ order.payment_status }}</label>
               </td>
             </tr>
             <tr v-if="form.status !== 'Cancelled' && order.payment_status === 'pending' && canUpdate">
-              <td colspan="3" align="right">
+              <td colspan="4" align="right">
                 <a
                   class="btn btn-success"
                   @click="form.payment_status = 'paid'; changeOrderStatus()"

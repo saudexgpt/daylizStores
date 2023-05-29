@@ -3,8 +3,7 @@
 namespace App\Models\Order;
 
 use App\Models\Stock\Item;
-use App\Models\Stock\ItemStockSubBatch;
-use App\Models\Warehouse\Warehouse;
+use App\Models\Stock\ItemStock;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -20,8 +19,8 @@ class OrderItem extends Model
     {
         return $this->belongsTo(Item::class);
     }
-    public function itemStock()
+    public function stock()
     {
-        return $this->belongsTo(ItemStockSubBatch::class);
+        return $this->belongsTo(ItemStock::class);
     }
 }

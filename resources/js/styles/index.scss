@@ -8,6 +8,7 @@
 @import 'btn';
 @import 'laravue';
 @import 'public/search-bar';
+@import "~@/styles/public/styles.scss";
 body {
   height: 100%;
   -moz-osx-font-smoothing: grayscale;
@@ -319,6 +320,8 @@ aside {
 .name-responsive {
     display: block !important;
 }
+
+
 @media all and (max-width: 560px) {
   .image-panel{
     min-height: 160px !important;

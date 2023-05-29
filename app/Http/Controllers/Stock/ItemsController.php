@@ -85,6 +85,25 @@ class ItemsController extends Controller
         // $item->amount = $item->price->amount;
         return response()->json(compact('item'), 200);
     }
+    public function searchProduct(Request $request)
+    {
+        $itemQuery = Item::query();
+        $relationship = ['media', 'itemStocks' => function ($q) {
+            $q->whereRaw('quantity_stocked - sold > 0');
+        }, 'discounts', 'category', 'price'];
+        $keyword = $request->slug;
+
+        $itemQuery->where(function ($q) use ($keyword) {
+            $q->where('name', 'LIKE', '%' . $keyword . '%');
+            $q->orWhere(function ($p) use ($keyword) {
+                $p->whereHas('category', function ($p)  use ($keyword) {
+                    $p->where('name', 'LIKE', '%' . $keyword . '%');
+                });
+            });
+        });
+        $items = $itemQuery->with($relationship)->paginate($request->limit);
+        return response()->json(compact('items'));
+    }
     public function itemReviews(Request $request)
     {
 
@@ -275,23 +294,30 @@ class ItemsController extends Controller
     {
         //
         $user = $this->getUser();
-        $quantity = $request->quantity;
-        $color = $request->color;
-        $size = $request->size;
-        $item_stock = ItemStock::where(['color' => $color, 'size' => $size, 'item_id' => $item->id])->first();
-        if (!$item_stock) {
-            $item_stock = new ItemStock();
-            $item_stock->quantity_stocked = $quantity;
-        } else {
+        $stocks = json_decode(json_encode($request->sub_batches));
+        $total_quantity = 0;
+        foreach ($stocks as $stock) {
 
-            $item_stock->quantity_stocked += $quantity;
+            $quantity = $stock->quantity;
+            $color = $stock->color;
+            $size = $stock->size;
+            $item_stock = ItemStock::where(['color' => $color, 'size' => $size, 'item_id' => $item->id])->first();
+            if (!$item_stock) {
+                $item_stock = new ItemStock();
+                $item_stock->quantity_stocked = $quantity;
+            } else {
+
+                $item_stock->quantity_stocked += $quantity;
+            }
+            $item_stock->item_id = $item->id;
+            $item_stock->color = $color;
+            $item_stock->size = $size;
+            $item_stock->save();
+
+            $total_quantity += $quantity;
         }
-        $item_stock->item_id = $item->id;
-        $item_stock->color = $color;
-        $item_stock->size = $size;
-        $item_stock->save();
         $title = "New Product Stock";
-        $description = "$quantity quantity of $item->name  was stocked by " . $user->name;;
+        $description = "$total_quantity quantity of $item->name  was stocked by " . $user->name;;
         $roles = ['assistant admin', 'warehouse manager', 'warehouse auditor'];
         $this->logUserActivity($title, $description, $roles);
         return $this->show($item);

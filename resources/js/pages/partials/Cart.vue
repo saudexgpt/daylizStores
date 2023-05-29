@@ -2,25 +2,27 @@
   <div>
     <div v-if="cart.length > 0">
       <h3>My Cart Content</h3>
-      <table class="table table-bordered">
-        <thead>
+      <table class="table">
+        <!-- <thead>
           <tr>
             <th>Item</th>
             <th>QTY/Amt</th>
-            <!-- <th>Extra</th> -->
             <th />
           </tr>
-        </thead>
+        </thead> -->
         <tbody>
           <tr v-for="(item, index) in cart" :key="index">
             <td>
-              <img :src="item.media[0].link" width="100"><br>
-              <strong>{{ item.name }}</strong>
+              <img :src="item.media[0].link" width="100">
             </td>
             <td>
-              <el-input-number v-model="item.quantity" :min="1" size="small" @input="calculateTotal()" /><br>
-
-              <div :id="`rate_${item.id}`">{{ '₦' + formatNumber(item.price.amount, 2) }}</div>
+              <strong>{{ item.name }}</strong>
+              <p><label>{{ item.quantity }} pieces</label></p>
+              <span v-if="item.standardAmount !== item.rate">
+                <span><s>{{ '₦' + formatNumber(item.standardAmount, 2) }}</s></span>
+                <span><label style="color: brown">{{ '₦' + formatNumber(item.rate, 2) }}</label></span>
+              </span>
+              <span v-else><label style="color: brown">{{ '₦' + formatNumber(item.rate, 2) }}</label></span>
             </td>
             <td>
               <el-button type="danger" circle @click="removeItem(index)"><i class="el-icon-delete" /></el-button>
@@ -83,47 +85,19 @@ export default {
   },
   methods: {
     formatNumber,
-    setOtherItemDescription(itemStocks) {
-      const colors = [];
-      const sizes = [];
-      itemStocks.forEach(stock => {
-        if (stock.color !== null) {
-          colors.push(stock.color);
-        }
-        if (stock.size !== null) {
-          sizes.push(stock.size);
-        }
-      });
-      return [colors, sizes];
-    },
+    // calculateTotalStockBal(item) {
+    //   let total_stock_balance = 0;
+    //   item.item_stocks.forEach(stock => {
+    //     total_stock_balance += parseInt(stock.total_stock_balance - stock.sold);
+    //   });
+    //   return total_stock_balance;
+    // },
     calculateTotal(){
       const app = this;
       let amount = 0;
       app.cart.forEach(item => {
-        const quantity = item.quantity;
-        const standardAmount = item.price.amount;
-        item.rate = standardAmount;
-        const rate_change = document.getElementById(`rate_${item.id}`);
-        if (rate_change) {
-          rate_change.innerHTML = '₦' + app.formatNumber(standardAmount, 2);
-        }
-        // document.getElementById(`rate_${item.id}`).innerHTML = '₦' + app.formatNumber(standardAmount, 2);
-        let price = parseInt(quantity * standardAmount);
-        if (item.discounts.length > 0) {
-          item.discounts.forEach(discount => {
-            const moq = discount.minimum_order_quantity;
-            const discountedAmount = discount.amount;
-            if (quantity >= moq) {
-              price = parseInt(quantity * discountedAmount);
-              if (rate_change) {
-                rate_change.innerHTML = '₦' + app.formatNumber(discountedAmount, 2);
-              }
-              // document.getElementById(`rate_${item.id}`).innerHTML = '₦' + app.formatNumber(discountedAmount, 2);
-              item.rate = discountedAmount;
-            }
-          });
-        }
-        amount += price;
+        const subTotal = item.subTotal;
+        amount += subTotal;
       });
       app.form.amount = amount;
     },

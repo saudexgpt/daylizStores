@@ -31,13 +31,14 @@ $router->get('get-items', 'Stock\ItemsController@index');
 $router->get('item-show/{item}', 'Stock\ItemsController@show');
 $router->get('item-details', 'Stock\ItemsController@itemDetails');
 $router->get('latest-products', 'Stock\ItemsController@fetchLatestProducts');
-
+$router->get('search-product', 'Stock\ItemsController@searchProduct');
 
 $router->get('item-reviews', 'Stock\ItemsController@itemReviews');
 $router->get('all-items', 'Stock\ItemsController@fetchAllItems');
 $router->post('give-product-review', 'Stock\ItemsController@giveReview');
 
 $router->get('fetch-necessary-params', 'Controller@fetchNecessayParams');
+
 
 $router->group(['middleware' => 'auth:api'], function () use ($router) {
 

@@ -3,7 +3,6 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'mdbvue/lib/mdbvue.css';
 import './styles/element-variables.scss';
 import 'vue-mj-daterangepicker/dist/vue-mj-daterangepicker.css';
-import '@/styles/index.scss'; // global css
 // Import stylesheet
 import 'vue-loading-overlay/dist/vue-loading.css';
 import Vue from 'vue';
@@ -20,18 +19,18 @@ import '@/permission'; // permission control
 import * as filters from './filters'; // global filters
 import Loading from 'vue-loading-overlay';
 import * as mdbvue from 'mdbvue';
-import HighchartsVue from 'highcharts-vue';
-import Highcharts from 'highcharts';
-import drilldown from 'highcharts/modules/drilldown';
-import exporting from 'highcharts/modules/exporting';
-import highcharts3d from 'highcharts/highcharts-3d';
-import highchartsMore from 'highcharts/highcharts-more';
-import solidGauge from 'highcharts/modules/solid-gauge';
-import stockInit from 'highcharts/modules/stock';
+// import HighchartsVue from 'highcharts-vue';
+// import Highcharts from 'highcharts';
+// import drilldown from 'highcharts/modules/drilldown';
+// import exporting from 'highcharts/modules/exporting';
+// import highcharts3d from 'highcharts/highcharts-3d';
+// import highchartsMore from 'highcharts/highcharts-more';
+// import solidGauge from 'highcharts/modules/solid-gauge';
+// import stockInit from 'highcharts/modules/stock';
 import { ServerTable, ClientTable, Event } from 'vue-tables-2';
 import DateRangePicker from 'vue-mj-daterangepicker';
-import Watermark from './watermark';
-Vue.use(Watermark);
+// import Watermark from './watermark';
+// Vue.use(Watermark);
 const eventsHub = new Vue();
 Vue.use(IdleVue, {
   eventEmitter: eventsHub,
@@ -39,14 +38,14 @@ Vue.use(IdleVue, {
   idleTime: 1800000, // 1800 seconds i.e 30 mins
   startAtIdle: false,
 });
-Vue.use(HighchartsVue);
+// Vue.use(HighchartsVue);
 
-drilldown(Highcharts);
-exporting(Highcharts);
-highcharts3d(Highcharts);
-highchartsMore(Highcharts);
-solidGauge(Highcharts);
-stockInit(Highcharts);
+// drilldown(Highcharts);
+// exporting(Highcharts);
+// highcharts3d(Highcharts);
+// highchartsMore(Highcharts);
+// solidGauge(Highcharts);
+// stockInit(Highcharts);
 Vue.use(ClientTable);
 Vue.use(ServerTable);
 Vue.use(DateRangePicker);

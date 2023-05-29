@@ -19,16 +19,13 @@
   <link rel="manifest" href="/favicon/manifest.json">
   <meta name="msapplication-TileColor" content="#ffffff">
   <!--public page styles-->
-  <link href="{{ asset('css/app.css') }}" type="text/css" rel="stylesheet" />
-  {{-- <link href="{{ mix('css/app.css') }}" type="text/css" rel="stylesheet" /> --}}
+  {{-- <link href="{{ asset('css/app.css') }}" type="text/css" rel="stylesheet" /> --}}
+  <link href="{{ mix('css/app.css') }}" type="text/css" rel="stylesheet" />
   <link rel="stylesheet" href="{{ asset('dist/css/bootstrap.min.css') }}"> <!-- Font Awesome -->
 
-
-  <link rel="stylesheet" href="{{ asset('dist/font-awesome/css/font-awesome.min.css') }}">
-
   <!-- Theme style -->
-  <link rel="stylesheet" href="{{ asset('dist/css/AdminLTE.css') }}">
-  <link href="{{ URL::asset('css/style.css') }}" type="text/css" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ asset('/dist/css/AdminLTE.css') }}">
+  <link href="{{ asset('css/style.css') }}" type="text/css" rel="stylesheet" />
   <!--//pop-up-box-->
   <!--public page styles-->
 
@@ -61,34 +58,9 @@
   </div>
 
 
-  <script src="{{ asset('js/vendor.js') }}"></script>
-  <script src="{{ asset('js/manifest.js') }}"></script>
-  <script src="{{ asset('js/app.js') }}"></script>
-
-
-  {{-- <script src="{{ asset('js/public-page.js') }}"></script> --}}
-  <!-- //jquery -->
-  {{-- <script src="https://js.pusher.com/6.0/pusher.min.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js') }}"></script>
-    <script>
-        // Enable pusher logging - don't include this in production
-        Pusher.logToConsole = true;
-
-        var pusher = new Pusher('ce87eae7b5bd426858ed', {
-        cluster: 'eu'
-        });
-
-        var channel = pusher.subscribe('my-channel');
-        channel.bind('App.Laravue.Models.User.'+1, function(data) {
-        //app.messages.push(JSON.stringify(data));
-        console.log(JSON.stringify(data));
-        });
-
-
-    </script> --}}
-  {{-- <script src="{{ mix('js/vendor.js') }}"></script>
-    <script src="{{ mix('js/manifest.js') }}"></script>
-    <script src="{{ mix('js/app.js') }}"></script> --}}
+  <script src="{{ mix('/js//js/vendor.js') }}"></script>
+  <script src="{{ mix('js/manifest.js') }}"></script>
+  <script src="{{ mix('/js//js/app.js') }}"></script>
 </body>
 
 </html>

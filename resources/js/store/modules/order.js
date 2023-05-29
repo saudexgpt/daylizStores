@@ -58,7 +58,7 @@ const state = {
 
 const mutations = {
   SET_ITEM_TO_CART: (state, item) => {
-    state.cart.push(item);
+    state.cart.unshift(item);
   },
   SET_CART: (state, items) => {
     state.cart = items;
@@ -83,16 +83,16 @@ const mutations = {
 const actions = {
   addItemToCart({ commit }, item) {
     const carts = store.getters.cart;
-    let count = 0;
-    carts.forEach(cart => {
-      if (cart.id === item.id) {
-        count++;
-      }
-    });
-    if (count < 1) {
-      commit('SET_ITEM_TO_CART', item);
+    const index = carts.map(function(cart) {
+      return parseInt(cart.stock_id);
+    }).indexOf(parseInt(item.stock_id));
+    if (index > -1) {
+      carts.splice(index, 1, item);
+    } else {
+      carts.push(item);
     }
-    setItemsToDb(store.getters.cart, 'cart');
+    store.dispatch('order/setCartItems', carts);
+    setItemsToDb(carts, 'cart');
   },
   setCartItems({ commit }, items) {
     commit('SET_CART', items);

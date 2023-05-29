@@ -10,7 +10,7 @@ function resolve(dir) {
   );
 }
 
-Mix.listen('configReady', webpackConfig => {
+mix.listen('configReady', webpackConfig => {
   // Add "svg" to image loader test
   const imageLoaderConfig = webpackConfig.module.rules.find(
     rule =>
@@ -43,12 +43,12 @@ mix
     'vue-i18n',
     'element-ui',
     'echarts',
-    'highlight.js',
-    'sortablejs',
-    'dropzone',
-    'xlsx',
-    'tui-editor',
-    'codemirror',
+    // 'highlight.js',
+    // 'sortablejs',
+    // 'dropzone',
+    // 'xlsx',
+    // 'tui-editor',
+    // 'codemirror',
   ])
   .options({
     processCssUrls: false,

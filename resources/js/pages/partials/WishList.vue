@@ -20,8 +20,11 @@
               <div>{{ '₦' + formatNumber(item.price.amount, 2) }}</div>
             </td>
             <td>
-              <el-tooltip effect="dark" content="Add to cart" placement="bottom-start">
-                <el-button circle type="primary" @click="addItemToCart(item, index)"><i class="el-icon-shopping-cart-2" /> </el-button>
+              <!-- <el-tooltip effect="dark" content="Add to cart" placement="bottom-start">
+                <el-button :disabled="item.item_stocks.length < 1" circle type="primary" @click="addItemToCart(item, index)"><i class="el-icon-shopping-cart-2" /> </el-button>
+              </el-tooltip> -->
+              <el-tooltip effect="dark" content="View Details" placement="top-start">
+                <el-button circle type="primary" @click="viewItemDetails()"><i class="el-icon-view" /> </el-button>
               </el-tooltip>
               <el-tooltip effect="dark" content="Remove from wishlist" placement="bottom-start">
                 <el-button type="danger" circle @click="removeItem(index)"><i class="el-icon-delete" /></el-button>
@@ -92,6 +95,13 @@ export default {
       const unsyc_data = app.wishList;
       unsyc_data.splice(index, 1);
       app.$store.dispatch('order/setWishlist', unsyc_data);
+    },
+    viewItemDetails(slug) {
+      const app = this;
+      if (app.$route.name !== 'ProductDetails') {
+        app.$router.push({ name: 'ProductDetails', params: { slug }});
+      }
+      app.$emit('close');
     },
   },
 };

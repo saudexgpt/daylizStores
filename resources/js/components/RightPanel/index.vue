@@ -60,7 +60,7 @@ export default {
   data() {
     return {
       show: false,
-      view: 'cart',
+      view: '',
       form: {
         cart_items: [],
         amount: 0,
@@ -124,6 +124,7 @@ export default {
     togglePanel() {
       const app = this;
       app.show = !app.show;
+      app.view = '';
     },
   },
 };

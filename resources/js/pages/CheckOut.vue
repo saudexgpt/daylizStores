@@ -151,7 +151,7 @@
                   <td>
                     <img :src="item.media[0].link" width="100"><br>
                     <h4>{{ `${item.name}` }}</h4>
-                    <label> x {{ item.quantity }} {{ item.package_type }} @{{ '₦' + formatNumber(item.rate, 2) }}</label>
+                    <label> {{ item.quantity }}pieces @{{ '₦' + formatNumber(item.rate, 2) }}</label>
                     <!-- <div v-if="item.selected_color">
 
                       Color: <strong :style="`background: ${item.selected_color}; padding: 5px`">{{ item.selected_color }}</strong>

@@ -70,15 +70,12 @@ import Error404 from '@/views/error-page/404';
 import { formatNumber } from '@/utils/index';
 import Resource from '@/api/resource';
 export default {
+  name: 'ProductSearch',
   components: {
     Pagination,
     Error404,
   },
   props: {
-    categoryId: {
-      type: String,
-      default: () => null,
-    },
     lg: {
       type: Number,
       default: 6,
@@ -100,11 +97,6 @@ export default {
       },
       total: 0,
     };
-  },
-  watch: {
-    categoryId() {
-      this.fetchItems();
-    },
   },
   created() {
     this.fetchItems();
@@ -142,11 +134,13 @@ export default {
     fetchItems() {
       const app = this;
       const { limit, page } = app.query;
-      const itemResource = new Resource('get-items');
-      app.load = true;
+      const slug = app.$route.params.slug;
       const param = app.query;
-      param.category_id = app.categoryId;
-      itemResource.list(param)
+      param.slug = slug;
+      app.load = true;
+
+      const itemCategory = new Resource('search-product');
+      itemCategory.list(slug)
         .then(response => {
           this.items = response.items.data;
           this.items.forEach((element, index) => {

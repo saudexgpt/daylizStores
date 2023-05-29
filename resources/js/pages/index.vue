@@ -1,9 +1,5 @@
 <template>
   <div>
-    <div class="search-body" style="margin-bottom: 10px;">
-      <search-box />
-    </div>
-
     <el-carousel :interval="7000">
       <el-carousel-item v-for="(item, index) in items" :key="index">
         <aside class="writup">
@@ -27,13 +23,11 @@
 </template>
 <script>
 import ItemMenu from './Menu';
-import SearchBox from './partials/SearchBox';
 // import Resource from '@/api/resource';
 export default {
   name: 'Home',
   components: {
     ItemMenu,
-    SearchBox,
   },
   data() {
     return {

@@ -18,7 +18,7 @@
           <el-option v-for="(category, category_index) in categories" :key="category_index" :label="category.name" :value="category.id" />
         </el-select>
       </template> -->
-      <el-button slot="append" icon="el-icon-search" @click="load(`/product/details/${searchString}`)"><span class="hide-mobile">Search</span></el-button>
+      <el-button slot="append" icon="el-icon-search" @click="load(`/product/search/${searchString}`)"><span class="hide-mobile">Search</span></el-button>
     </el-autocomplete>
   </div>
 

@@ -1,17 +1,48 @@
 <template>
   <div>
     <div class="header-most-top">
-      <p>
+      <p class="header-link">
         <a @click="load('/home')">Home</a>&nbsp;<span style="color: #909090">|</span>
         <a @click="load('/about')">About Us</a>&nbsp;<span style="color: #909090">|</span>
         <a @click="load('/product/list')">Shop</a>
         <!-- <a @click="load('/track/order')">Track Order</a> -->
       </p>
+      <p class="header-slug text-center">Your Happiness, Our Priority</p>
+    </div>
+    <div class="mobile-view-fixed-tab">
+      <el-row>
+        <el-col :xs="8">
+          <div align="center">
+            <a @click="load('/product/list')"> <i class="el-icon-sell fa-2x" /><br>Shop</a>
+          </div>
+        </el-col>
+        <el-col :xs="8">
+          <div align="center">
+            <a @click="load('/track/order')"> <i class="el-icon-guide fa-2x" /><br>Track Order</a>
+          </div>
+        </el-col>
+        <el-col :xs="8">
+          <div align="center">
+            <el-dropdown size="medium" trigger="click">
+              <span class="el-dropdown-link" style="cursor: pointer">
+                <i class="el-icon-more fa-2x" /><br>More
+              </span>
+              <el-dropdown-menu slot="dropdown" style="width: 200px !important; padding: 10px !important">
+                <el-dropdown-item><a @click="load('/home')">Home</a></el-dropdown-item>
+                <el-dropdown-item><a @click="load('/about')">About Us</a></el-dropdown-item>
+                <el-dropdown-item><a @click="load('/my-account/edit')">My Profile</a></el-dropdown-item>
+                <el-dropdown-item v-if="userData.id === null" divided><a class="btn btn-success" @click="load('/login')">SIGN IN</a></el-dropdown-item>
+                <el-dropdown-item v-if="userData.id !== null" divided><a class="btn btn-danger" @click="logout">LOGOUT</a></el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </div>
+        </el-col>
+      </el-row>
     </div>
     <nav id="navbarHome" class="header-bg">
 
       <ul class="menu">
-        <li class="toggle" @click="openNav()"><i class="fas fa-bars" /></li>
+        <li class="toggle" @click="openNav()"><i class="el-icon-s-fold" /></li>
         <li class="logo">
           <a href="/home">
             <img :src="img" alt="Company Logo" class="logo-responsive">
@@ -77,6 +108,9 @@
           </div>
         </el-col>
         <el-col :xs="24" :sm="16" :md="19" :lg="19">
+          <div class="search-body" style="margin-bottom: 10px;">
+            <search-box />
+          </div>
           <app-main />
         </el-col>
       </el-row>

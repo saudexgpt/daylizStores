@@ -40,7 +40,7 @@ class OrdersController extends Controller
             $condition2 = ['order_status' => $status];
         }
         $orders = Order::with([
-            'customer', 'orderItems.item'
+            'customer', 'orderItems.item', 'orderItems.stock'
         ])->where($condition)->where($condition2)->paginate($request->limit);
         return response()->json(compact('orders'));
     }
@@ -156,15 +156,9 @@ class OrdersController extends Controller
 
             $order_item_obj = new OrderItem();
             $order_item_obj->order_id = $order->id;
+            $order_item_obj->stock_id = $order_item->stock_id;
             $order_item_obj->item_id = $order_item->id;
-            $product_name = $order_item->name;
-            if (isset($order_item->selectedColor) && $order_item->selectedColor !== '') {
-                $product_name .= '-' . $order_item->selectedColor;
-            }
-            if (isset($order_item->selectedSize) && $order_item->selectedSize !== '') {
-                $product_name .= '-' . $order_item->selectedSize;
-            }
-            $order_item_obj->product_name = $product_name;
+            $order_item_obj->product_name = $order_item->name;
 
             $order_item_obj->quantity = $order_item->quantity;
             $order_item_obj->price = $order_item->rate;
@@ -225,6 +219,9 @@ class OrdersController extends Controller
             $this->logUserActivity($title, $description);
         }
         $order->order_status = $status;
+        if ($status === 'On Transit') {
+            $this->deductFromStock($order->id);
+        }
         $order->payment_status = $payment_status;
         $order->save();
         $description = "Order ($order->order_number) status changed to " . strtoupper($order->order_status) . " by: $user->name ($user->email)";
@@ -243,9 +240,19 @@ class OrdersController extends Controller
      * @param  \App\Models\Order\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Order $order)
+    private function deductFromStock($orderId)
     {
-        //
+        $orderItems = OrderItem::with('stock')->where('order_id', $orderId)->get();
+        foreach ($orderItems as $orderItem) {
+            $stock = $orderItem->stock;
+            $order_quantity = $orderItem->quantity;
+            $stock_balance = $stock->quantity_stocked - $stock->sold;
+
+            if ($stock_balance >= $order_quantity) {
+                $stock->sold += $order_quantity;
+                $stock->save();
+            }
+        }
     }
 
     /**

@@ -27,7 +27,10 @@
           </div>
           <span class="price-box">
             <br>
-            <el-button class="pull-right" circle type="primary" @click="addItemToCart(item)"><i class="el-icon-shopping-cart-2" /></el-button>
+            <!-- <el-button :disabled="item.item_stocks.length < 1" class="pull-right" circle type="primary" @click="addItemToCart(item)"><i class="el-icon-shopping-cart-2" /></el-button> -->
+            <el-tooltip class="pull-right" effect="dark" content="View Details" placement="top-start">
+              <el-button circle type="primary" @click="$router.push({name: 'ProductDetails', params: { slug: item.slug}})"><i class="el-icon-view" /> </el-button>
+            </el-tooltip>
             <div class="amount">{{ '₦' + formatNumber(item.price.amount, 2) }}</div>
             <br>
             <!-- <div class="zoom">

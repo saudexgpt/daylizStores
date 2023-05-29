@@ -29,22 +29,22 @@
   text-align: center;
 }
 @media (max-width: 560px) {
-  .el-input__inner {
+  .no-border .el-input__inner {
     border: 1px solid #bcbcc0 !important;
     border-top-left-radius: 30px !important;
     border-bottom-left-radius: 30px !important;
   }
-  .el-input-group--prepend {
+  .no-border .el-input-group--prepend {
     border: #bcbcc0 solid 1px;
     border-top-left-radius: 30px !important;
     border-bottom-left-radius: 30px !important;
     height: 20px;
   }
 
-  .el-input-group__prepend {
+  .no-border .el-input-group__prepend {
     display: none !important;
   }
-  .el-input-group__append{
+  .no-border .el-input-group__append{
     border: 1px solid transparent !important;
     border-top-right-radius: 30px !important;
     border-bottom-right-radius: 30px !important;
