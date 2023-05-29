@@ -10,7 +10,7 @@ function resolve(dir) {
   );
 }
 
-mix.listen('configReady', webpackConfig => {
+Mix.listen('configReady', webpackConfig => {
   // Add "svg" to image loader test
   const imageLoaderConfig = webpackConfig.module.rules.find(
     rule =>

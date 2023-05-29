@@ -39,7 +39,4 @@ module.exports = {
     ],
   },
   plugins: plugins,
-  output: {
-    chunkFilename: 'js/[name].js?id=[chunkhash]',
-  },
 };
