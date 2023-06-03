@@ -60,14 +60,6 @@
   <script src="{{ mix('js/app.js') }}"></script>
   <script src="{{ mix('js/manifest.js') }}"></script>
   <script src="{{ mix('/js/vendor~utils-1.js') }}"></script>
-  <script src="{{ mix('/js/vendor~utils-2.js') }}"></script>
-  <script src="{{ mix('/js/vendor~utils-3.js') }}"></script>
-  <script src="{{ mix('/js/vendor~utils-4.js') }}"></script>
-  <script src="{{ mix('/js/vendor~utils-5.js') }}"></script>
-  <script src="{{ mix('/js/vendor~utils-6.js') }}"></script>
-  <script src="{{ mix('/js/vendor~utils-7.js') }}"></script>
-  <script src="{{ mix('/js/vendor~utils-8.js') }}"></script>
-  <script src="{{ mix('/js/vendor~utils-9.js') }}"></script>
   <script src="{{ mix('/js/vendor~utils-10.js') }}"></script>
   <script src="{{ mix('/js/vendor~utils-11.js') }}"></script>
   <script src="{{ mix('/js/vendor~utils-12.js') }}"></script>
@@ -77,8 +69,16 @@
   <script src="{{ mix('/js/vendor~utils-16.js') }}"></script>
   <script src="{{ mix('/js/vendor~utils-17.js') }}"></script>
   <script src="{{ mix('/js/vendor~utils-18.js') }}"></script>
-  <script src="{{ mix('/js/vendor~utils-18.js') }}"></script>
+  <script src="{{ mix('/js/vendor~utils-19.js') }}"></script>
+  <script src="{{ mix('/js/vendor~utils-2.js') }}"></script>
   <script src="{{ mix('/js/vendor~utils-20.js') }}"></script>
+  <script src="{{ mix('/js/vendor~utils-3.js') }}"></script>
+  <script src="{{ mix('/js/vendor~utils-4.js') }}"></script>
+  <script src="{{ mix('/js/vendor~utils-5.js') }}"></script>
+  <script src="{{ mix('/js/vendor~utils-6.js') }}"></script>
+  <script src="{{ mix('/js/vendor~utils-7.js') }}"></script>
+  <script src="{{ mix('/js/vendor~utils-8.js') }}"></script>
+  <script src="{{ mix('/js/vendor~utils-9.js') }}"></script>
 </body>
 
 </html>
