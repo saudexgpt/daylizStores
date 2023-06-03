@@ -19,12 +19,12 @@
         <settings />
       </right-panel>
     </div>
-    <idle-modal v-if="isIdle" />
+    <!-- <idle-modal v-if="isIdle" /> -->
   </div>
 </template>
 
 <script>
-import IdleModal from './IdleModal';
+// import IdleModal from './IdleModal';
 import RightPanel from '@/components/RightPanel';
 import { Navbar, Sidebar, AppMain, TagsView, Settings } from './components';
 import ResizeMixin from './mixin/resize-handler.js';
@@ -36,7 +36,7 @@ const userNotifications = new Resource('user-notifications');
 export default {
   name: 'Layout',
   components: {
-    IdleModal,
+    // IdleModal,
     AppMain,
     Navbar,
     RightPanel,

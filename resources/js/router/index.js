@@ -4,12 +4,8 @@ import Router from 'vue-router';
 Vue.use(Router);
 
 /* Layout */
-import Layout from '@/layout';
-import PublicLayout from '@/layout/Public';
-import adminRoutes from './modules/admin';
-import errorRoutes from './modules/error';
-import InBoundRoutes from './modules/in-bound';
-import OrderRoutes from './modules/orders';
+const Layout = () => import('@/layout');
+const PublicLayout = () => import('@/layout/Public');
 /**
  * Sub-menu only appear when children.length>=1
  * @see https://doc.laravue.dev/guide/essentials/router-and-nav.html
@@ -223,6 +219,10 @@ export const constantRoutes = [{
   }],
 },
 ];
+const adminRoutes = () => import('./modules/admin');
+const errorRoutes = () => import('./modules/error');
+const InBoundRoutes = () => import('./modules/in-bound');
+const OrderRoutes = () => import('./modules/orders');
 
 export const asyncRoutes = [
   InBoundRoutes,

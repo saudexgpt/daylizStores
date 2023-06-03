@@ -1,18 +1,18 @@
 import 'mdbvue/lib/css/mdb.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import 'mdbvue/lib/mdbvue.css';
+// import 'mdbvue/lib/mdbvue.css';
 import './styles/element-variables.scss';
 import 'vue-mj-daterangepicker/dist/vue-mj-daterangepicker.css';
 // Import stylesheet
 import 'vue-loading-overlay/dist/vue-loading.css';
 import Vue from 'vue';
-import IdleVue from 'idle-vue';
+// import IdleVue from 'idle-vue';
 import Cookies from 'js-cookie';
 import ElementUI from 'element-ui';
 import App from './views/App';
 import store from './store';
 import router from '@/router';
-import i18n from './lang'; // Internationalization
+// import i18n from './lang'; // Internationalization
 import '@/icons'; // icon
 import '@/permission'; // permission control
 
@@ -31,13 +31,13 @@ import { ServerTable, ClientTable, Event } from 'vue-tables-2';
 import DateRangePicker from 'vue-mj-daterangepicker';
 // import Watermark from './watermark';
 // Vue.use(Watermark);
-const eventsHub = new Vue();
-Vue.use(IdleVue, {
-  eventEmitter: eventsHub,
-  store,
-  idleTime: 1800000, // 1800 seconds i.e 30 mins
-  startAtIdle: false,
-});
+// const eventsHub = new Vue();
+// Vue.use(IdleVue, {
+//   eventEmitter: eventsHub,
+//   store,
+//   idleTime: 1800000, // 1800 seconds i.e 30 mins
+//   startAtIdle: false,
+// });
 // Vue.use(HighchartsVue);
 
 // drilldown(Highcharts);
@@ -70,7 +70,7 @@ for (const component in mdbvue) {
 }
 Vue.use(ElementUI, {
   size: Cookies.get('size') || 'medium', // set element-ui default size
-  i18n: (key, value) => i18n.t(key, value),
+  // i18n: (key, value) => i18n.t(key, value),
 });
 
 // register global utility filters.
@@ -84,7 +84,7 @@ new Vue({
   el: '#app',
   router,
   store,
-  i18n,
+  // i18n,
   render: h => h(App),
 
 });

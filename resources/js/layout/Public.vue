@@ -296,32 +296,6 @@ export default {
       });
       window.location = '/home';
     },
-    // calculateTotal(){
-    //   const app = this;
-    //   let amount = 0;
-    //   app.cart.forEach(item => {
-    //     amount += parseInt(item.quantity * item.price.amount);
-    //   });
-    //   app.form.amount = amount;
-    // },
-    // removeItem(index){
-    //   const unsyc_data = this.cart;
-    //   unsyc_data.splice(index, 1);
-    //   this.$store.dispatch('order/setUnsavedOrder', unsyc_data);
-    //   this.calculateTotal();
-    // },
-    // checkOut() {
-    //   const app = this;
-    //   app.calculateTotal();
-    //   const form = app.form;
-    //   form.cart_items = app.cart;
-    //   app.$store.dispatch('order/setPendingOrder', form);
-    //   app.$router.push({ path: '/menu/check-out' });
-    // },
-    // loadAndToggle(url) {
-    //   document.getElementById('toggle-bar').click();
-    //   this.$router.push({ path: url });
-    // },
     load(url) {
       this.$router.push({ path: url });
     },
