@@ -85,7 +85,7 @@ const actions = {
         console.log(error);
       });
   },
-  loadOfflineData() {
+  loadPersistentData() {
     return new Promise((resolve) => {
       fetchItemsInDb('items');
       fetchItemsInDb('categories');

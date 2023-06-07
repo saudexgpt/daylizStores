@@ -14,8 +14,8 @@ store.dispatch('items/fetchAllItems');
 store.dispatch('items/fetchCategories');
 store.dispatch('items/fetchLatestProducts');
 store.dispatch('app/setNecessaryParams');
-store.dispatch('items.loadOfflineData');
-store.dispatch('order.loadOfflineData');
+store.dispatch('items/loadPersistentData');
+store.dispatch('order/loadOfflineData');
 router.beforeEach(async(to, from, next) => {
   // start progress bar
   NProgress.start();
