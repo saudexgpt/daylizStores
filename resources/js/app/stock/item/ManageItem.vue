@@ -179,7 +179,7 @@ export default {
     calculateBalance(stocks) {
       let balance = 0;
       stocks.forEach(stock => {
-        balance += (stock.quantity_stocked - stock.sold);
+        balance += (stock.quantity_stocked - stock.reserved - stock.sold);
       });
       return balance;
     },

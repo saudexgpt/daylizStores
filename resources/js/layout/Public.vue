@@ -258,9 +258,6 @@ export default {
       return this.$store.getters.params;
     },
   },
-  created() {
-    this.$store.dispatch('order/loadOfflineData');
-  },
   mounted() {
     var navbar = document.getElementById('navbarHome');
 

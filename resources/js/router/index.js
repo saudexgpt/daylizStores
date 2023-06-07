@@ -5,7 +5,8 @@ Vue.use(Router);
 
 /* Layout */
 const Layout = () => import('@/layout');
-const PublicLayout = () => import('@/layout/Public');
+import PublicLayout from '@/layout/Public';
+import Home from '@/pages/index';
 /**
  * Sub-menu only appear when children.length>=1
  * @see https://doc.laravue.dev/guide/essentials/router-and-nav.html
@@ -107,8 +108,7 @@ export const constantRoutes = [{
   hidden: true,
   children: [{
     path: 'home',
-    component: () =>
-      import ('@/pages/index'),
+    component: Home,
     name: 'Home',
   },
 

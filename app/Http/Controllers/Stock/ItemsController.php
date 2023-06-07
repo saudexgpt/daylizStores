@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 
 class ItemsController extends Controller
 {
+    protected $balance = 'quantity_stocked - reserved - sold';
     public function fetchAllItems()
     {
         $items = Item::with(['category'])->orderBy('id')->get();
@@ -22,7 +23,7 @@ class ItemsController extends Controller
 
     public function fetchLatestProducts()
     {
-        $stocks = ItemStock::with(['item.media', 'item.price'])->whereRaw('quantity_stocked - sold > 0')->orderBy('updated_at', 'DESC')->groupBy('item_id')->paginate(10);
+        $stocks = ItemStock::with(['item.media', 'item.price'])->whereRaw($this->balance . ' > 0')->orderBy('updated_at', 'DESC')->groupBy('item_id')->paginate(10);
         return response()->json(compact('stocks'));
     }
     /**
@@ -35,7 +36,7 @@ class ItemsController extends Controller
         //
         $exclude_item_id = NULL;
         $relationship = ['media', 'itemStocks' => function ($q) {
-            $q->whereRaw('quantity_stocked - sold > 0');
+            $q->whereRaw($this->balance . ' > 0');
         }, 'discounts', 'category', 'price'];
         if (isset($request->exclude_item_id) && $request->exclude_item_id !== '' && $request->exclude_item_id !== null) {
             $exclude_item_id = $request->exclude_item_id;
@@ -61,7 +62,7 @@ class ItemsController extends Controller
     {
 
         $item = $item->with(['media', 'itemStocks' => function ($q) {
-            $q->whereRaw('quantity_stocked - sold > 0');
+            $q->whereRaw($this->balance . ' > 0');
         }, 'discounts', 'category', 'price'])->find($item->id);
         // $item->currency_id = $item->price->currency_id;
         // $item->purchase_price = $item->price->purchase_price;
@@ -78,7 +79,7 @@ class ItemsController extends Controller
     {
         $slug = str_replace(' ', '-', strtolower($request->slug));
         $item = Item::with(['media', 'itemStocks' => function ($q) {
-            $q->whereRaw('quantity_stocked - sold > 0');
+            $q->whereRaw($this->balance . ' > 0');
         }, 'discounts', 'category', 'price'])->where('slug', $slug)->first();
         // $item->currency_id = $item->price->currency_id;
         // $item->purchase_price = $item->price->purchase_price;
@@ -89,7 +90,7 @@ class ItemsController extends Controller
     {
         $itemQuery = Item::query();
         $relationship = ['media', 'itemStocks' => function ($q) {
-            $q->whereRaw('quantity_stocked - sold > 0');
+            $q->whereRaw($this->balance . ' > 0');
         }, 'discounts', 'category', 'price'];
         $keyword = $request->slug;
 

@@ -44,7 +44,7 @@
                       <span>{{ stock.size }}</span>
                     </span>
                     <span>
-                      <el-badge v-if="parseInt(stock.quantity_stocked - stock.sold) > 0" :value="`${parseInt(stock.quantity_stocked - stock.sold)} in stock`" type="success" />
+                      <el-badge v-if="parseInt(stock.quantity_stocked - stock.reserved - stock.sold) > 0" :value="`${parseInt(stock.quantity_stocked - stock.reserved - stock.sold)} in stock`" type="success" />
                       <el-badge v-else value="Out of Stock" type="danger" />
                     </span>
                     <span><i v-if="selectedProductStock.id === stock.id" class="el-icon-check" /></span>
@@ -181,7 +181,7 @@ export default {
       const app = this;
       app.showQuantityOverflowError = false;
       const stock = app.selectedProductStock;
-      const stockBalance = parseInt(stock.quantity_stocked - stock.sold);
+      const stockBalance = parseInt(stock.quantity_stocked - stock.reserved - stock.sold);
       if (quantity > stockBalance) {
         app.showQuantityOverflowError = true;
         return true;
@@ -211,7 +211,7 @@ export default {
       const app = this;
       const quantity = (app.quantity > 0) ? app.quantity : 1;
       const stock = app.selectedProductStock;
-      const stockBalance = parseInt(stock.quantity_stocked - stock.sold);
+      const stockBalance = parseInt(stock.quantity_stocked - stock.reserved - stock.sold);
       if (app.quantityOverflow(quantity)) {
         item.quantity = stockBalance;
         return false;

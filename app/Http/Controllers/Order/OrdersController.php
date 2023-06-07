@@ -125,6 +125,7 @@ class OrdersController extends Controller
         $order->nearest_bustop      = $request->nearest_bustop;
         $order->address             = $request->address;
         $order->notes               = $request->notes;
+        $order->valid_till          = date('Y-m-d H:i:s', strtotime('+24 hours'));
         if ($order->save()) {
             $order->order_number = $prefix . $order->id . randomNumber(); //$this->getInvoiceNo($prefix, $order->id);
             $order->save();
@@ -137,6 +138,9 @@ class OrdersController extends Controller
             // $this->createOrderHistory($order, $description);
             //create items ordered for
             $this->createOrderItems($order, $order_items);
+
+            // we need to reserve the product for at least 24 hours to reduce stock so that no issue will arise
+            $this->reserveProduct($order->id);
         }
         return response()->json(['order_details' => $order], 200);
     }
@@ -220,7 +224,7 @@ class OrdersController extends Controller
         }
         $order->order_status = $status;
         if ($status === 'On Transit') {
-            $this->deductFromStock($order->id);
+            $this->sellOutFromStock($order->id);
         }
         $order->payment_status = $payment_status;
         $order->save();
@@ -240,15 +244,30 @@ class OrdersController extends Controller
      * @param  \App\Models\Order\Order  $order
      * @return \Illuminate\Http\Response
      */
-    private function deductFromStock($orderId)
+    private function reserveProduct($orderId)
     {
         $orderItems = OrderItem::with('stock')->where('order_id', $orderId)->get();
         foreach ($orderItems as $orderItem) {
             $stock = $orderItem->stock;
             $order_quantity = $orderItem->quantity;
-            $stock_balance = $stock->quantity_stocked - $stock->sold;
+            $stock_balance = $stock->quantity_stocked - $stock->reserved - $stock->sold;
 
             if ($stock_balance >= $order_quantity) {
+                $stock->reserved += $order_quantity;
+                $stock->save();
+            }
+        }
+    }
+    private function sellOutFromStock($orderId)
+    {
+        $orderItems = OrderItem::with('stock')->where('order_id', $orderId)->get();
+        foreach ($orderItems as $orderItem) {
+            $stock = $orderItem->stock;
+            $order_quantity = $orderItem->quantity;
+            $reserved = $stock->reserved;
+
+            if ($reserved >= $order_quantity) {
+                $stock->reserved -= $order_quantity;
                 $stock->sold += $order_quantity;
                 $stock->save();
             }
