@@ -171,7 +171,13 @@ class OrdersController extends Controller
             $order_item_obj->save();
         }
     }
-
+    public function adminSearchOrder(Request $request)
+    {
+        $order_number = $request->order_number;
+        $orders = Order::with(['customer', 'orderItems.item', 'orderItems.stock'])
+            ->where('order_number', $order_number)->get();
+        return response()->json(compact('orders'), 200);
+    }
     public function search(Request $request)
     {
         $message = 'failed';

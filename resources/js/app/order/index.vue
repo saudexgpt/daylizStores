@@ -7,29 +7,21 @@
       <div class="box-header">
         <h4 class="box-title">List of Orders {{ in_location }}</h4>
 
-        <!-- <span class="pull-right">
-          <router-link v-if="checkPermission(['create order'])" :to="{name:'Create'}" class="btn btn-info"> Create New Order</router-link>
-        </span> -->
+        <span class="pull-right">
+          <el-select v-model="form.status" placeholder="Select Status" class="span" @input="getOrders">
+            <el-option v-for="(status, index) in params.order_statuses" :key="index" :value="status" :label="status" />
+
+          </el-select>
+        </span>
 
       </div>
       <div class="box-body">
         <aside>
           <el-row>
-            <!-- <el-col :xs="24" :sm="12" :md="12">
-              <p for="">Select Location</p>
-              <el-select v-model="form.location_index" placeholder="Select Location" class="span" filterable @input="getOrders">
-                <el-option v-for="(location, index) in locations" :key="index" :value="index" :label="location.name" />
-
-              </el-select>
-
-            </el-col> -->
-            <el-col :xs="24" :sm="12" :md="12">
-              <p for="">Select status</p>
-              <el-select v-model="form.status" placeholder="Select Status" class="span" @input="getOrders">
-                <el-option v-for="(status, index) in params.order_statuses" :key="index" :value="status" :label="status" />
-
-              </el-select>
-
+            <el-col :xs="24" :sm="24" :md="24">
+              <el-input v-model="order_number" placeholder="Search Order Number" class="no-border">
+                <el-button slot="append" :disabled="order_number === ''" type="primary" icon="el-icon-search" @click="searchOrderNumber" />
+              </el-input>
             </el-col>
           </el-row>
         </aside>
@@ -123,8 +115,10 @@ export default {
         filterByColumn: true,
         perPage: 10,
         // editableColumns:['name', 'category.name', 'sku'],
-        sortable: ['order_number', 'customer.name', 'created_at', 'order_status', 'payment_status'],
-        filterable: ['order_number', 'customer.name', 'created_at', 'order_status', 'payment_status'],
+        sortable: [],
+        filterable: [],
+        // sortable: ['order_number', 'customer.name', 'created_at', 'order_status', 'payment_status'],
+        // filterable: ['order_number', 'customer.name', 'created_at', 'order_status', 'payment_status'],
       },
       page: {
         option: 'list',
@@ -142,6 +136,7 @@ export default {
       order: {},
       selected_row_index: '',
       load: false,
+      order_number: '',
 
     };
   },
@@ -196,6 +191,21 @@ export default {
         .catch(error => {
           this.load = false;
           console.log(error.message);
+        });
+    },
+    searchOrderNumber() {
+      const param = { order_number: this.order_number };
+      this.load = true;
+      const searchOrderNo = new Resource('order/general/search-order');
+      searchOrderNo
+        .list(param)
+        .then((response) => {
+          this.orders = response.orders;
+          this.load = false;
+        })
+        .catch((error) => {
+          console.log(error);
+          this.load = false;
         });
     },
     deliverOrder(index, order){

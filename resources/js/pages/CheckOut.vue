@@ -149,7 +149,8 @@
               <tbody>
                 <tr v-for="(item, index) in pendingOrder.cart_items" :key="index">
                   <td>
-                    <img :src="item.media[0].link" width="100"><br>
+                    <img v-if="item.media.length > 0" :src="item.media[0].link" width="100">
+                    <img v-else src="/images/no-image.jpeg" width="100"><br>
                     <h4>{{ `${item.name}` }}</h4>
                     <label> {{ item.quantity }}pieces @{{ '₦' + formatNumber(item.rate, 2) }}</label>
                     <!-- <div v-if="item.selected_color">

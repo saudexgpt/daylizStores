@@ -12,8 +12,11 @@
         </thead> -->
         <tbody>
           <tr v-for="(item, index) in cart" :key="index">
-            <td>
+            <td v-if="item.media.length > 0">
               <img :src="item.media[0].link" width="100">
+            </td>
+            <td v-else>
+              <img src="/images/no-image.jpeg" width="100">
             </td>
             <td>
               <strong>{{ item.name }}</strong>
