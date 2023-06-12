@@ -1,7 +1,7 @@
 <template>
   <div :class="classObj" class="app-wrapper">
     <audio id="myAudio">
-      <source src="alert.mp3" type="audio/mpeg">
+      <source src="/alert.mp3" type="audio/mpeg">
     </audio>
     <div style="display: none">
       <button id="play_audio" @click="playAudio()">Play Audio</button>

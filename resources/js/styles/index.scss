@@ -1,8 +1,5 @@
 @import '~normalize.css/normalize.css';
 @import '~element-ui/lib/theme-chalk/index.css';
-@import 'bootstrap';
-@import 'AdminLite';
-@import 'custom-style';
 @import 'variables';
 @import 'mixin';
 @import 'transition';
@@ -48,6 +45,7 @@ html {
 }
 .item-name {
   font-size: 16px;
+  min-height: 40px;
   font-weight: 600;
   color: #000000;
 }
@@ -67,7 +65,7 @@ html {
   // text-align: center;
 }
 .image-panel {
-  min-height: 180px
+  min-height: 180px;
   // text-align: center;
 }
 .item-panel:hover {
@@ -326,11 +324,14 @@ aside {
 
 
 @media all and (max-width: 560px) {
+  .item-name {
+    font-size: 12px;
+  }
   .image-panel{
     min-height: 160px !important;
   }
   .app-container {
-    padding: 3px !important;
+    padding: 5px !important;
   }
   .name-responsive {
     display: none !important;
@@ -340,26 +341,6 @@ aside {
   }
 
 }
-// .el-select{
-//   height:50px !important;
-//   line-height:50px !important;
-// }
-
-// .el-card {
-//   margin-bottom: 10px !important;
-//   border-radius: 20px 20px 0 0 !important;
-//   border: 1px solid #168d06 !important;
-//   background-color: #FFFFFF;
-//   overflow: hidden;
-//   color: #303133;
-//   transition: 0.3s;
-// }
-// .el-card__header {
-//   background: #168d06;
-//   color: #FFFFFF;
-//   padding: 18px 20px;
-//   border-bottom: 1px solid #e6ebf5;
-//   box-sizing: border-box;
-//   border-radius: 20px 20px 0 0;
-// }
-
+@import 'bootstrap';
+@import 'AdminLite';
+@import 'custom-style';

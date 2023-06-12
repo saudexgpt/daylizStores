@@ -40,6 +40,15 @@
             <el-tooltip content="Stock Up" placement="top">
               <a class="btn btn-success" @click="item=props.row; selected_row_index=props.index; page.option = 'stock_item'"><i class="el-icon-coin" /> </a>
             </el-tooltip>
+            <el-tooltip v-if="props.row.enabled === 0" content="Enable" placement="top">
+
+              <a class="btn btn-info" @click="toggleStatus(props.row, 'enabled', 1)"><i class="el-icon-check" /> </a>
+            </el-tooltip>
+            <el-tooltip v-else content="Disable" placement="top">
+
+              <a class="btn btn-danger" @click="toggleStatus(props.row, 'disabled', 0)"><i class=" el-icon-close" /> </a>
+            </el-tooltip>
+
             <!-- <a class="btn btn-primary" @click="item=props.row; selected_row_index=props.index; page.option = 'edit_item'"><i class="fa fa-edit" /> </a>
             <a class="btn btn-danger" @click="confirmDelete(props)"><i class="fa fa-trash" /> </a> -->
           </div>
@@ -203,6 +212,31 @@ export default {
           console.log(error);
         });
     },
+    toggleStatus(row, action, value) {
+      // this.loader();
+
+      const param = { action, value };
+      const app = this;
+      const message = `Click OK to confirm that you want to change product to ${action}`;
+      if (confirm(message)) {
+        // const load = deleteGeneralProducts.loaderShow();
+        app.load = true;
+        const toggleStatusResource = new Resource('stock/general-items/toggle-status');
+        toggleStatusResource.update(row.id, param)
+          .then(response => {
+            app.fetchGeneralProducts();
+            this.$message({
+              message: 'Action Successful',
+              type: 'success',
+            });
+            app.load = false;
+          })
+          .catch(error => {
+            app.load = false;
+            console.log(error);
+          });
+      }
+    },
     confirmDelete(props) {
       // this.loader();
 
@@ -210,7 +244,8 @@ export default {
       const app = this;
       const message = 'This delete action cannot be undone. Click OK to confirm';
       if (confirm(message)) {
-        const load = deleteGeneralProducts.loaderShow();
+        // const load = deleteGeneralProducts.loaderShow();
+        app.load = true;
         deleteGeneralProducts.destroy(row.id, row)
           .then(response => {
             app.items.splice(row.index - 1, 1);
@@ -218,10 +253,10 @@ export default {
               message: 'Item has been deleted',
               type: 'success',
             });
-            load.hide();
+            app.load = false;
           })
           .catch(error => {
-            load.hide();
+            app.load = false;
             console.log(error);
           });
       }

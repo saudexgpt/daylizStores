@@ -52,14 +52,14 @@
                 </tr>
               </tbody>
             </table>
-            <hr>
-            <el-button @click="addItemToWishlist(selectedItem)"><i class="fas fa-heart" /> Add to wishlist</el-button>
-            <p />
-            <!-- <el-button @click="addItemToComparedItems(selectedItem)"><i class="fas fa-random" /> Compare</el-button> -->
-            <el-input-number v-model="quantity" :min="1" />
-            <el-button :disabled="selectedItem.item_stocks.length < 1" type="primary" @click="addItemToCart(selectedItem)"><i class="el-icon-shopping-cart-2" /> Add to Cart</el-button>
-            <el-alert v-if="showQuantityOverflowError" type="error">Quantity is more than stock</el-alert>
           </div>
+          <hr>
+          <el-button @click="addItemToWishlist(selectedItem)"><i class="fas fa-heart" /> Add to wishlist</el-button>
+          <p />
+          <!-- <el-button @click="addItemToComparedItems(selectedItem)"><i class="fas fa-random" /> Compare</el-button> -->
+          <el-input-number v-model="quantity" :min="1" />
+          <el-button :disabled="selectedItem.item_stocks.length < 1" type="primary" @click="addItemToCart(selectedItem)"><i class="el-icon-shopping-cart-2" /> Add to Cart</el-button>
+          <el-alert v-if="showQuantityOverflowError" type="error">Quantity is more than stock</el-alert>
         </el-col>
       </el-row>
 
@@ -217,7 +217,7 @@ export default {
         return false;
       }
       item = app.calculateDiscounts(item, quantity);
-      const new_name = `${item.name} - ${app.selectedColor} - ${app.selectedSize}`;
+      const new_name = `${item.name} - ${(app.selectedColor !== null) ? app.selectedColor : ''} - ${app.selectedSize}`;
       const param = {
         id: item.id,
         stock_id: stock.id,
@@ -236,7 +236,7 @@ export default {
     addItemToWishlist(item) {
       const app = this;
       item.quantity = 1;
-      item.new_name = `${item.name} - ${app.selectedColor} - ${app.selectedSize}`;
+      item.new_name = `${item.name} - ${(app.selectedColor !== null) ? app.selectedColor : ''} - ${app.selectedSize}`;
       app.$store.dispatch('order/addItemToWishlist', item);
       app.$notify({
         title: `${item.name} is added to wish list`,
@@ -307,9 +307,9 @@ export default {
       const colors = [];
       const itemStocks = app.selectedItem.item_stocks;
       itemStocks.forEach(stock => {
-        if (stock.color !== null) {
-          colors.push(stock.color);
-        }
+        // if (stock.color !== null) {
+        colors.push(stock.color);
+        // }
       });
 
       const uniqueColors = [...new Set(colors)];

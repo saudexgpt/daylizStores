@@ -17,13 +17,15 @@ class ItemsController extends Controller
     protected $balance = 'quantity_stocked - reserved - sold';
     public function fetchAllItems()
     {
-        $items = Item::with(['category'])->orderBy('id')->get();
+        $items = Item::with(['category'])->where('enabled', 1)->get();
         return response()->json(compact('items'));
     }
 
     public function fetchLatestProducts()
     {
-        $stocks = ItemStock::with(['item.media', 'item.price'])->whereRaw($this->balance . ' > 0')->orderBy('updated_at', 'DESC')->groupBy('item_id')->paginate(10);
+        $stocks = ItemStock::with(['item' => function ($q) {
+            $q->where('enabled', 1);
+        }, 'item.media', 'item.price'])->whereRaw($this->balance . ' > 0')->orderBy('updated_at', 'DESC')->groupBy('item_id')->paginate(10);
         return response()->json(compact('stocks'));
     }
     /**
@@ -43,9 +45,18 @@ class ItemsController extends Controller
         }
         if (isset($request->category_id) && $request->category_id !== '' && $request->category_id !== null) {
             $category_id = $request->category_id;
-            $items = Item::with($relationship)->where('category_id', $category_id)->where('id', '!=', $exclude_item_id)->orderBy('id')->paginate($request->limit);
+            $items = Item::with($relationship)
+                ->where('enabled', 1)
+                ->where('category_id', $category_id)
+                ->where('id', '!=', $exclude_item_id)
+                ->inRandomOrder()
+                ->paginate($request->limit);
         } else {
-            $items = Item::with($relationship)->where('id', '!=', $exclude_item_id)->orderBy('id')->paginate($request->limit);
+            $items = Item::with($relationship)
+                ->where('enabled', 1)
+                ->where('id', '!=', $exclude_item_id)
+                ->inRandomOrder()
+                ->paginate($request->limit);
         }
 
         return response()->json(compact('items'));
@@ -94,14 +105,15 @@ class ItemsController extends Controller
         }, 'discounts', 'category', 'price'];
         $keyword = $request->slug;
 
-        $itemQuery->where(function ($q) use ($keyword) {
-            $q->where('name', 'LIKE', '%' . $keyword . '%');
-            $q->orWhere(function ($p) use ($keyword) {
-                $p->whereHas('category', function ($p)  use ($keyword) {
-                    $p->where('name', 'LIKE', '%' . $keyword . '%');
+        $itemQuery->where('enabled', 1)
+            ->where(function ($q) use ($keyword) {
+                $q->where('name', 'LIKE', '%' . $keyword . '%');
+                $q->orWhere(function ($p) use ($keyword) {
+                    $p->whereHas('category', function ($p)  use ($keyword) {
+                        $p->where('name', 'LIKE', '%' . $keyword . '%');
+                    });
                 });
             });
-        });
         $items = $itemQuery->with($relationship)->paginate($request->limit);
         return response()->json(compact('items'));
     }
@@ -298,9 +310,9 @@ class ItemsController extends Controller
         $stocks = json_decode(json_encode($request->sub_batches));
         $total_quantity = 0;
         foreach ($stocks as $stock) {
-
             $quantity = $stock->quantity;
-            $color = $stock->color;
+            $other_color = $stock->other_color;
+            $color = ($stock->color != 'others') ? $stock->color : $other_color;
             $size = $stock->size;
             $item_stock = ItemStock::where(['color' => $color, 'size' => $size, 'item_id' => $item->id])->first();
             if (!$item_stock) {
@@ -369,9 +381,23 @@ class ItemsController extends Controller
         $roles = ['assistant admin', 'warehouse manager', 'warehouse auditor'];
         $this->logUserActivity($title, $description, $roles);
 
-        $item->taxes()->detach(); //use detach for pivoted relationship (hasManyThrough)
+        // $item->taxes()->detach(); //use detach for pivoted relationship (hasManyThrough)
         $item->price()->delete();
         $item->delete();
+        return response()->json(null, 204);
+    }
+    public function toggleStatus(Request $request, Item $item)
+    {
+        // first log this event
+        $user = $this->getUser();
+        $action = $request->action;
+        $title = "Product $action";
+        $description = $item->name . " was $action by " . $user->name;
+        $this->logUserActivity($title, $description);
+
+        // $item->taxes()->detach(); //use detach for pivoted relationship (hasManyThrough)
+        $item->enabled = $request->value;
+        $item->save();
         return response()->json(null, 204);
     }
 }

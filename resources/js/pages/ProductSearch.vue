@@ -140,7 +140,7 @@ export default {
       app.load = true;
 
       const itemCategory = new Resource('search-product');
-      itemCategory.list(slug)
+      itemCategory.list(param)
         .then(response => {
           this.items = response.items.data;
           this.items.forEach((element, index) => {

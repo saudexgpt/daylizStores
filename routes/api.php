@@ -91,6 +91,8 @@ $router->group(['middleware' => 'auth:api'], function () use ($router) {
             $router->put('stockup/{item}', 'ItemsController@stock');
 
             $router->delete('delete/{item}', 'ItemsController@destroy');
+            $router->put('toggle-status/{item}', 'ItemsController@toggleStatus');
+
             $router->get('delete-item-tax', 'ItemsController@destroyItemTax');
             $router->group(['prefix' => 'prices'], function () use ($router) {
                 $router->post('store', 'ItemPricesController@store');

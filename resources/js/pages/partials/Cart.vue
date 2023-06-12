@@ -41,6 +41,10 @@
           </tr>
         </tbody>
       </table>
+      <br>
+      <br>
+      <br>
+      <br>
     </div>
     <div v-else align="center">
       <h1>&nbsp;</h1>

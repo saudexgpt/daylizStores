@@ -15,7 +15,7 @@
                 <tr>
                   <th />
                   <th>Quantity</th>
-                  <th>Color</th>
+                  <th>Color (if applicable)</th>
                   <th>Size (if applicable)</th>
                 </tr>
               </thead>
@@ -37,6 +37,7 @@
                       placeholder="Select Color"
                       style="width: 100%"
                     >
+                      <el-option value="others" label="Others" />
                       <el-option
                         v-for="(color, color_index) in params.colors"
                         :key="color_index"
@@ -47,6 +48,7 @@
                         <span class="pull-right">{{ color_index }}</span>
                       </el-option>
                     </el-select>
+                    <el-input v-if="sub_batch.color === 'others'" v-model="sub_batch.other_color" placeholder="Specify color" />
                   </td>
                   <td>
                     <el-input v-model="sub_batch.size" placeholder="Size" style="width: 100%" />
@@ -100,6 +102,7 @@ export default {
           {
             quantity: '',
             color: '',
+            other_color: '',
             size: '',
           },
         ],
@@ -111,6 +114,7 @@ export default {
           {
             quantity: '',
             color: '',
+            other_color: '',
             size: '',
           },
         ],
@@ -139,7 +143,7 @@ export default {
     moment,
     emptyField() {
       const app = this;
-      const checkEmptyLines = app.sub_batches.filter(detail => detail.quantity === '' || detail.color === '');
+      const checkEmptyLines = app.sub_batches.filter(detail => detail.quantity === '');
       if (checkEmptyLines.length > 0) {
         return true;
       }
@@ -160,6 +164,7 @@ export default {
         this.sub_batches.push({
           quantity: '',
           color: '',
+          other_color: '',
           size: '',
         });
       }

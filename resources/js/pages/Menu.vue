@@ -96,7 +96,7 @@ export default {
       load: false,
       query: {
         page: 1,
-        limit: 10,
+        limit: 20,
       },
       total: 0,
     };
