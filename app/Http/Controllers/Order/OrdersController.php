@@ -125,7 +125,7 @@ class OrdersController extends Controller
         $order->nearest_bustop      = $request->nearest_bustop;
         $order->address             = $request->address;
         $order->notes               = $request->notes;
-        $order->valid_till          = date('Y-m-d H:i:s', strtotime('+24 hours'));
+        $order->valid_till          = date('Y-m-d H:i:s', strtotime('+48 hours'));
         if ($order->save()) {
             $order->order_number = $prefix . $order->id . randomNumber(); //$this->getInvoiceNo($prefix, $order->id);
             $order->save();
