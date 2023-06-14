@@ -145,22 +145,6 @@ class ItemsController extends Controller
             ['category_id' => $category_id, 'name' => $name],
             ['slug' => $slug, 'description' => $description]
         );
-        // $item = Item::where('name', $name)->first();
-
-        // if (!$item) {
-        //     $item = new Item();
-        // }
-        // $item->name = $name;
-        // $item->slug = str_replace(' ', '-', strtolower($name));
-        // // $item->package_type = $request->brand;
-        // // $item->size = $request->size;
-        // $item->category_id = $category_id;
-        // // $item->color = $request->color;
-        // $item->description = $description;
-        // // $item->picture = $picture;
-        // //$item->gender = $request->gender;
-        // // $item->quantity_stocked = $request->quantity_stocked;
-        // $item->save();
 
         $this->attachItemToMedia($item->id, $request->images);
         $this->removeDeletedMedia($request->deletedImages);
@@ -168,34 +152,14 @@ class ItemsController extends Controller
 
             $this->createItemDiscounts($request->discounts, $item->id);
         }
-        // save item taxes
-        // if ($tax_ids) {
-        //     foreach ($tax_ids  as $tax_id) {
-        //         $item_tax = new ItemTax();
-        //         $item_tax->tax_id = $tax_id;
-        //         $item_tax->item_id = $item->id;
-        //         $item_tax->save();
-        //     }
-        // }
-        //save item price
-        // $item_price = ItemPrice::where('item_id', $item->id)->first();
-        // if (!$item_price) {
-
-        //     $item_price = new ItemPrice();
-        // }
-        // $item_price->item_id = $item->id;
-        // //$item_price->currency_id = $request->currency_id;
-        // $item_price->amount = $request->amount;
-        // // $item_price->purchase_price = $request->purchase_price;
-        // $item_price->save();
-        $item_price = ItemPrice::updateOrCreate(
+        ItemPrice::updateOrCreate(
             ['item_id' => $item->id],
             ['amount' => $request->amount]
         );
         // log this action
         $title = "Product Added";
         $description = $name . " added to list of products by " . $user->name;;
-        $roles = ['assistant admin', 'warehouse manager', 'warehouse auditor'];
+        $roles = [];
         $this->logUserActivity($title, $description, $roles);
         return $this->show($item);
 
@@ -266,16 +230,6 @@ class ItemsController extends Controller
             $this->createItemDiscounts($request->discounts, $item->id);
         }
         $this->removeDeletedDiscounts($request->deletedDiscounts);
-        //update item price
-        // $item_price = ItemPrice::where('item_id', $item->id)->first();
-        // if (!$item_price) {
-        //     $item_price = new ItemPrice();
-        // }
-        // $item_price->item_id = $item->id;
-        // // $item_price->currency_id = $request->currency_id;
-        // $item_price->amount = $request->amount;
-        // // $item_price->purchase_price = $request->purchase_price;
-        // $item_price->save();
         ItemPrice::updateOrCreate(
             ['item_id' => $item->id],
             ['amount' => $request->amount]

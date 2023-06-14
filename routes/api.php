@@ -150,6 +150,8 @@ $router->group(['middleware' => 'auth:api'], function () use ($router) {
 
             $router->get('/', 'OrdersController@index'); //->middleware('permission:view order');
             $router->get('show/{order}', 'OrdersController@show');
+            $router->get('my-orders', 'OrdersController@myOrders');
+
             $router->get('search-order', 'OrdersController@adminSearchOrder'); //->middleware('permission:view order');
 
             $router->put('change-status/{order}', 'OrdersController@changeOrderStatus'); //->middleware('permission:approve order|cancel order|');

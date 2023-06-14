@@ -193,6 +193,13 @@ class OrdersController extends Controller
         }
         return response()->json(compact('message'), 200);
     }
+    public function myOrders()
+    {
+        //
+        $user = $this->getUser();
+        $orders = Order::with(['customer', 'orderItems.item'])->where('user_id', $user->id)->orderBy('id', 'DESC')->paginate(10);
+        return response()->json(compact('orders'));
+    }
     /**
      * Display the specified resource.
      *
