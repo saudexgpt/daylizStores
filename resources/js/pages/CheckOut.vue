@@ -4,7 +4,7 @@
       <h1 class="section-title ff-secondary text-center text-primary-custom fw-normal">Checkout</h1>
     </div>
     <div v-if="userData.id === null" class="callout callout-info">Returning Customer? <router-link :to="{ path: '/login?redirect=/product/check-out'}">Click here to login</router-link> </div>
-    <el-row :gutter="20">
+    <el-row v-if="params.can_make_order" :gutter="20">
       <div v-if="pendingOrder.cart_items.length > 0">
 
         <el-col
@@ -236,6 +236,10 @@
         </el-col>
       </div>
     </el-row>
+    <div v-else>
+      <img src="/images/lock.png">
+      <h4>Sorry!!! We are not receiving orders for now. Please check back later.</h4>
+    </div>
   </div>
 </template>
 <script>
@@ -292,6 +296,7 @@ export default {
     },
   },
   created() {
+    this.$store.dispatch('app/setNecessaryParams');
     this.$store.dispatch('order/loadOfflineData');
     this.fetchLocations();
     this.setForm();
