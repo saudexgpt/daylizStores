@@ -12,6 +12,7 @@ use App\Models\Order\OrderStatus;
 use App\Models\Order\OrderItem;
 use App\Mail\CustomerCredentials;
 use App\Mail\OrderDetails;
+use App\Models\Stock\ItemStock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -103,16 +104,42 @@ class OrdersController extends Controller
 
         return $prefix . $zeros . $next_no;
     }
+    private function checkStockBeforeOrdering($order_items)
+    {
+        $limited_stock = false;
+        $details = [];
+        foreach ($order_items as $order_item) {
+            $stock_id = $order_item->stock_id;
+            $quantity = $order_item->quantity;
+            $stock = ItemStock::find($stock_id);
+            $name = $order_item->name;
+            $balance = $stock->quantity_stocked - $stock->reserved - $stock->sold;
+            if ($balance < $quantity) {
+                $limited_stock = true;
+                $price = $order_item->rate * $balance;
+                $order_item->subTotal = $price;
+                $order_item->quantity = $balance;
+                $details[] = ['product' => $name, 'balance' => $balance, 'updated_item' => $order_item];
+            }
+        }
+        return array($limited_stock, $details);
+    }
     public function store(Request $request)
     {
         //
+
+        $order_items = json_decode(json_encode($request->cart_items));
+        list($limited_stock, $details) = $this->checkStockBeforeOrdering($order_items);
+        if ($limited_stock === true) {
+            $message = 'check_cart';
+            return response()->json(compact('details', 'message'), 206);
+        }
         $location = '';
         foreach ($request->location as $loc) {
             $location .= $loc . '/';
         }
         $user = $this->registerCustomer($request);
         $prefix = 'DLZ';
-        $order_items = json_decode(json_encode($request->cart_items));
         $order = new Order();
         $order->location       = $location;
         $order->user_id         = $user->id;
@@ -142,7 +169,7 @@ class OrdersController extends Controller
             // we need to reserve the product for at least 24 hours to reduce stock so that no issue will arise
             $this->reserveProduct($order->id);
         }
-        return response()->json(['order_details' => $order], 200);
+        return response()->json(['order_details' => $order, 'message' => 'success'], 200);
     }
 
     private function createOrderHistory($order, $description)
@@ -235,10 +262,14 @@ class OrdersController extends Controller
             $title = "Order Payment Made";
             $this->logUserActivity($title, $description);
         }
-        $order->order_status = $status;
         if ($status === 'On Transit') {
             $this->sellOutFromStock($order->id);
         }
+        if ($status === 'Cancelled') {
+            $this->releasePendingUnpaidOrderQuantities($order);
+        }
+
+        $order->order_status = $status;
         $order->payment_status = $payment_status;
         $order->save();
         $description = "Order ($order->order_number) status changed to " . strtoupper($order->order_status) . " by: $user->name ($user->email)";
@@ -249,7 +280,20 @@ class OrdersController extends Controller
         // $this->createOrderHistory($order, $description);
         // return $this->show($order);
     }
+    private function releasePendingUnpaidOrderQuantities($order)
+    {
+        $orderItems = $order->orderItems;
+        foreach ($orderItems as $orderItem) {
+            $stock = $orderItem->stock;
+            $order_quantity = $orderItem->quantity;
+            $reserved = $stock->reserved;
 
+            if ($reserved >= $order_quantity) {
+                $stock->reserved -= $order_quantity;
+                $stock->save();
+            }
+        }
+    }
     /**
      * Update the specified resource in storage.
      *

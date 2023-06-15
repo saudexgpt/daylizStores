@@ -139,6 +139,7 @@
         >
           <el-card>
             <span slot="header">Order List</span>
+            <h4 align="center">Kindly note that we have NO PAYMENT REFUND POLICY</h4>
             <table class="table table-bordered">
               <thead>
                 <tr>
@@ -375,8 +376,39 @@ export default {
       app.loading = true;
       storeOrder.store(form).then(response => {
         app.loading = false;
-        const orderDetails = response.order_details;
-        this.$alert(`<div align="center">
+        if (response.message === 'check_cart') {
+          const details = response.details;
+          let table_row = '';
+          details.forEach(detail => {
+            app.$store.dispatch('order/addItemToCart', detail.updated_item);
+            table_row += `<tr>
+                            <td>
+                              ${detail.product}
+                            </td>
+                            <td>
+                              ${detail.balance}
+                            </td >
+                          </tr>`;
+          });
+          this.$alert(`<div align="center">
+            <div style="border: dashed 2px #be1712; padding: 10px; color: #be1712"><label>Sorry! You may need to review your cart content and click on Check Out again</label><p> Some products are fast moving and must have been sold out just before you checked out.</p><p>Affected products and their current stock balance are stated below</p></div>
+            '<table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Balance</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${table_row}
+              </tbody>
+            </table>
+          </div>`, 'Review Cart Content', {
+            dangerouslyUseHTMLString: true,
+          });
+        } else {
+          const orderDetails = response.order_details;
+          this.$alert(`<div align="center">
             <div style="border: dashed 2px #47cf2c; padding: 10px; color: #47cf2c"><label>Thank you. We have received your order</label></div>
             <table class="table table-bordered">
               <tbody>
@@ -404,19 +436,20 @@ export default {
               </tbody>
             </table>
             <div>Please use your <label>Order Number</label> as your payment reference and for Tracking</div>
+            <p>Your order details was also sent to the email you provided</p>
           </div>`, 'Order Placed Successfully', {
-          dangerouslyUseHTMLString: true,
-        });
-        const pendingOrder = {
-          amount: 0,
-          cart_items: [],
-        };
-        app.$store.dispatch('order/setCartItems', []);
-        app.$store.dispatch('order/setPendingOrder', pendingOrder);
-        app.$router.push({ path: '/track/order' });
+            dangerouslyUseHTMLString: true,
+          });
+          const pendingOrder = {
+            amount: 0,
+            cart_items: [],
+          };
+          app.$store.dispatch('order/setCartItems', []);
+          app.$store.dispatch('order/setPendingOrder', pendingOrder);
+          app.$router.push({ path: '/track/order' });
+        }
       }).catch(err => {
         console.log(err);
-        alert('An error occured');
         app.loading = false;
       });
     },
