@@ -21,16 +21,14 @@
                 <div class="item-name">{{ item.name }}</div>
                 <img v-if="item.media.length > 0" :src="item.media[0].thumbnail" class="item-image">
                 <img v-else src="/images/no-image.jpeg" class="item-image">
+
+                <img v-if="item.item_stocks.length < 1" src="/images/out-of-stock.png" class="out-of-stock">
               </router-link>
             </div>
             <span class="price-box">
               <br>
               <div align="center">
                 <div class="amount">{{ '₦' + formatNumber(item.price.amount, 2) }}</div>
-                <div>
-                  <el-badge v-if="item.item_stocks.length > 0" value="In Stock" type="success" />
-                  <el-badge v-else value="Out of Stock" type="danger" />
-                </div>
               </div>
               <div>
                 <hr>
