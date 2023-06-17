@@ -127,7 +127,9 @@ class OrdersController extends Controller
     public function store(Request $request)
     {
         //
-
+        if ($this->can_make_order === false) {
+            return response()->json([], 500);
+        }
         $order_items = json_decode(json_encode($request->cart_items));
         list($limited_stock, $details) = $this->checkStockBeforeOrdering($order_items);
         if ($limited_stock === true) {
