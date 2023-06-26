@@ -20,6 +20,15 @@
             Export Excel
           </el-button> -->
         </div>
+        <aside>
+          <el-row>
+            <el-col :xs="24" :sm="24" :md="24">
+              <el-input v-model="query.item_name" placeholder="Search Item" class="no-border">
+                <el-button slot="append" :disabled="item_name === ''" type="primary" icon="el-icon-search" @click="fetchGeneralProducts" />
+              </el-input>
+            </el-col>
+          </el-row>
+        </aside>
         <v-client-table v-model="items" v-loading="load" :columns="columns" :options="options">
           <div slot="picture" slot-scope="{row}">
             <img :src="row.picture" alt="Image" width="100">
@@ -105,8 +114,8 @@ export default {
         filterByColumn: true,
         perPage: 10,
         // editableColumns:['name', 'category.name', 'sku'],
-        sortable: ['name', 'category.name', 'quantity'],
-        filterable: ['name', 'category.name'],
+        sortable: [],
+        filterable: [],
       },
       page: {
         option: 'list',
@@ -127,6 +136,7 @@ export default {
         page: 1,
         limit: 10,
         category_id: '',
+        item_name: '',
       },
       total: 0,
 
