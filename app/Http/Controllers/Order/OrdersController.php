@@ -13,6 +13,7 @@ use App\Models\Order\OrderItem;
 use App\Mail\CustomerCredentials;
 use App\Mail\OrderDetails;
 use App\Models\Stock\ItemStock;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -203,6 +204,19 @@ class OrdersController extends Controller
         }
         $order->total = $total;
         $order->save();
+    }
+
+    public function stabilizeOrderTotal()
+    {
+        set_time_limit(0);
+        OrderItem::with('order')->chunkById(200, function (Collection $orderItems) {
+            foreach ($orderItems as $orderItem) {
+                $order = $orderItem->order;
+                $order->total += $orderItem->total;
+                $order->save();
+            }
+        }, $column = 'id');
+        return 'true';
     }
     public function adminSearchOrder(Request $request)
     {
