@@ -134,6 +134,10 @@
             <div v-if="params">
               <h3 class="section-title-footer ff-secondary text-start text-white fw-normal mb-4">Account Details</h3>
               <span v-html="params.account_details" />
+              <div>
+                <strong>Note: </strong>Any goods left unpicked is at owner's risk<br>
+                NO REFUNDS after payment, NO EXCHANGE after pickup
+              </div>
             </div>
           </el-col>
           <el-col

@@ -185,6 +185,7 @@ class OrdersController extends Controller
 
     private function createOrderItems($order, $order_items)
     {
+        $total = 0;
         foreach ($order_items as $order_item) {
 
             $order_item_obj = new OrderItem();
@@ -196,9 +197,12 @@ class OrdersController extends Controller
             $order_item_obj->quantity = $order_item->quantity;
             $order_item_obj->price = $order_item->rate;
             $order_item_obj->total = $order_item->quantity * $order_item->rate;
+            $total += $order_item_obj->total;
             // $order_item_obj->tax = $order_item['tax'];
             $order_item_obj->save();
         }
+        $order->total = $total;
+        $order->save();
     }
     public function adminSearchOrder(Request $request)
     {
