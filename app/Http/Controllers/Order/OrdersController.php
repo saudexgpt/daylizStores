@@ -209,9 +209,11 @@ class OrdersController extends Controller
     public function stabilizeOrderTotal()
     {
         set_time_limit(0);
-        OrderItem::with('order')->chunkById(200, function (Collection $orderItems) {
+        OrderItem::with('order')->where('total_updated', 0)->chunkById(200, function (Collection $orderItems) {
             foreach ($orderItems as $orderItem) {
                 $order = $orderItem->order;
+                $orderItem->total_updated = 1;
+                $orderItem->save();
                 $order->total += $orderItem->total;
                 $order->save();
             }
