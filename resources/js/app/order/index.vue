@@ -72,6 +72,7 @@
     </div>
     <div v-if="page.option==='order_details'">
       <a class="btn btn-danger no-print" @click="page.option='list'; getOrders();">Go Back</a>
+      <a class="btn btn-primary no-print" @click="doPrint();">Print</a>
       <order-details :order="order" :page="page" :can-update="true" />
     </div>
   </div>
@@ -231,6 +232,9 @@ export default {
         .then(response => {
           app.orders.splice(index - 1, 1);
         });
+    },
+    doPrint() {
+      window.print();
     },
 
   },

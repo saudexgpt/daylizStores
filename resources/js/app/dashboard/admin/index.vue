@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-editor-container">
-    <panel-group v-if="data_summary" :data-summary="data_summary" />
+    <panel-group v-if="data_summary" :data-summary="data_summary" class="no-print" />
 
     <order />
     <!-- <table class="table table-bordered table-striped">

@@ -851,7 +851,7 @@ function randomNumber()
 {
     $tokens = '0123456789';
     $serial = '';
-    for ($i = 0; $i < 4; $i++) {
+    for ($i = 0; $i < 3; $i++) {
         $serial .= $tokens[mt_rand(0, strlen($tokens) - 1)];
     }
     return $serial;

@@ -126,6 +126,10 @@
       #u_content_text_5 .v-container-padding-padding {
         padding: 10px 30px 11px 10px !important;
       }
+
+      #u_content_text_6 .v-container-padding-padding {
+        padding: 10px 30px 11px 10px !important;
+      }
     }
   </style>
 
@@ -317,7 +321,28 @@
                           </tr>
                         </tbody>
                       </table>
-
+                      <h4>Order Details</h4>
+                      <table id="u_content_text_6" style="font-family:'Montserrat',sans-serif;" role="presentation"
+                        cellpadding="0" cellspacing="0" width="100%" border="0">
+                        <tr>
+                          <th>Item</th>
+                          <th>Quantity</th>
+                          <th>Rate</th>
+                          <th>Subtotal</th>
+                        </tr>
+                        @foreach ($order_items as $order_item)
+                          <tr>
+                            <td>{{ $order_item->name }}</td>
+                            <td>{{ $order_item->quantity }}</td>
+                            <td>{{ $order_item->rate }}</td>
+                            <td>{{ $order_item->quantity * $order_item->rate }}</td>
+                          </tr>
+                        @endforeach
+                        <tr>
+                          <td colspan="3" align="right">Total</td>
+                          <td>{{ $order->total }}</td>
+                        </tr>
+                      </table>
                       <!--[if (!mso)&(!IE)]><!-->
                     </div>
                     <!--<![endif]-->

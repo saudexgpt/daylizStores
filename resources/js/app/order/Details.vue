@@ -1,5 +1,5 @@
 <template>
-  <section v-if="order" class="invoice">
+  <section v-if="order" class="invoice no-margin">
     <!-- title row -->
     <div class="row">
       <div class="col-xs-12 page-header" align="center">
@@ -48,17 +48,17 @@
             <tr>
               <th>Product</th>
               <th>Order Quantity</th>
-              <th v-if="canUpdate && order.order_status === 'Pending'">In Stock Quantity</th>
-              <!-- <th>Tax</th> -->
-              <th>Amount</th>
+              <!-- <th v-if="canUpdate && order.order_status === 'Pending'">In Stock Quantity</th> -->
+              <th>Rate</th>
+              <th>Subtotal</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(order_item, index) in order.order_items" :key="index">
               <td>{{ order_item.product_name }}</td>
               <td>{{ order_item.quantity }}</td>
-              <td v-if="canUpdate && order.order_status === 'Pending'">{{ order_item.stock.quantity_stocked - order_item.stock.sold }}</td>
-              <!-- <td>{{ order_item.item.price.amount }}</td> -->
+              <!-- <td v-if="canUpdate && order.order_status === 'Pending'">{{ order_item.stock.quantity_stocked - order_item.stock.sold }}</td> -->
+              <td>{{ currency + formatNumber(order_item.price, 2) }}</td>
               <!-- <td>{{ (order_item.tax * 100).toFixed(2) }}%</td> -->
               <td align="right">{{ currency + formatNumber(order_item.total, 2) }}</td>
             </tr>
@@ -72,7 +72,7 @@
               </td>
             </tr> -->
             <tr>
-              <td colspan="2" align="right"><label>Grand Total</label></td>
+              <td colspan="3" align="right"><label>Grand Total</label></td>
               <td align="right"><label style="color: green">{{ currency + formatNumber(order.total, 2).toLocaleString() }}</label></td>
             </tr>
             <tr>
@@ -103,7 +103,7 @@
     </div>
     <!-- /.row -->
 
-    <div class="row">
+    <div class="row no-print">
       <!-- accepted payments column -->
       <div class="col-xs-12 col-sm-6 col-md-6">
         <label>CURRENT ORDER DELIVERY STATUS</label>
@@ -173,7 +173,7 @@
             </div>
           </div>
         </div>
-        <div v-else-if="order.order_status === 'Delivered'">
+        <div v-else-if="order.order_status === 'Delivered'" class="no-print">
           <h4>Kindly rate our product</h4>
           <table class="table table-bordered table-striped">
             <thead>
@@ -391,74 +391,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.order-activity {
-  .order-block {
-    .ordername, .description {
-      display: block;
-      margin-left: 50px;
-      padding: 2px 0;
-    }
-    img {
-      width: 40px;
-      height: 40px;
-      float: left;
-    }
-    :after {
-      clear: both;
-    }
-    .img-circle {
-      border-radius: 50%;
-      border: 2px solid #d2d6de;
-      padding: 2px;
-    }
-    span {
-      font-weight: 500;
-      font-size: 12px;
-    }
-  }
-  .post {
-    font-size: 14px;
-    border-bottom: 1px solid #d2d6de;
-    margin-bottom: 15px;
-    padding-bottom: 15px;
-    color: #666;
-    .image {
-      width: 100%;
-    }
-    .order-images {
-      padding-top: 20px;
-    }
-  }
-  .list-inline {
-    padding-left: 0;
-    margin-left: -5px;
-    list-style: none;
-    li {
-      display: inline-block;
-      padding-right: 5px;
-      padding-left: 5px;
-      font-size: 13px;
-    }
-    .link-black {
-      &:hover, &:focus {
-        color: #999;
-      }
-    }
-  }
-  .el-carousel__item h3 {
-    color: #475669;
-    font-size: 14px;
-    opacity: 0.75;
-    line-height: 200px;
-    margin: 0;
-  }
-
-  .el-carousel__item:nth-child(2n) {
-    background-color: #99a9bf;
-  }
-
-  .el-carousel__item:nth-child(2n+1) {
-    background-color: #d3dce6;
+@media print {
+  .no-margin {
+    margin-top: -100px !important;
   }
 }
 </style>

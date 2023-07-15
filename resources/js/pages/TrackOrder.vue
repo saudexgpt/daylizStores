@@ -183,6 +183,7 @@ export default {
     },
     submitOrder() {
       const app = this;
+      app.order = null;
       const form = app.trackOrderForm;
       if (form.phone === '' || form.order_number === '') {
         alert('Kindly fill all the required fields');
@@ -193,6 +194,7 @@ export default {
       storeOrder.store(form).then(response => {
         if (response.message === 'success') {
           app.order = response.order;
+          app.page.option = 'order_details';
         } else {
           alert('DATA NOT FOUND');
         }

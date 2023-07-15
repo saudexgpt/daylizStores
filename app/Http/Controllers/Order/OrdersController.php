@@ -159,16 +159,16 @@ class OrdersController extends Controller
         if ($order->save()) {
             $order->order_number = $prefix . $order->id . randomNumber(); //$this->getInvoiceNo($prefix, $order->id);
             $order->save();
-
-            Mail::to($user)->send(new OrderDetails($user, $order));
-            $title = "New Order Made";
-            $description = "New order ($order->order_number) was created by: $user->name ($user->phone)";
-            $this->logUserActivity($title, $description);
             //log this action to order history
             // $this->createOrderHistory($order, $description);
             //create items ordered for
-            $this->createOrderItems($order, $order_items);
+            $order = $this->createOrderItems($order, $order_items);
 
+
+            Mail::to($user)->send(new OrderDetails($user, $order, $order_items));
+            $title = "New Order Made";
+            $description = "New order ($order->order_number) was created by: $user->name ($user->phone)";
+            $this->logUserActivity($title, $description);
             // we need to reserve the product for at least 24 hours to reduce stock so that no issue will arise
             $this->reserveProduct($order->id);
         }
@@ -204,6 +204,7 @@ class OrdersController extends Controller
         }
         $order->total = $total;
         $order->save();
+        return $order;
     }
 
     public function stabilizeOrderTotal()
