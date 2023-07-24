@@ -11,6 +11,7 @@ use App\Models\Stock\ItemPrice;
 use App\Models\Stock\ItemStock;
 use App\Models\Stock\ItemTax;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ItemsController extends Controller
 {
@@ -35,7 +36,7 @@ class ItemsController extends Controller
      */
     public function index(Request $request)
     {
-        // $user = $this->getUser();
+        $user = Auth::user();
         $itemQuery = Item::query();
         $exclude_item_id = NULL;
         $relationship = ['media', 'itemStocks' => function ($q) {
@@ -45,10 +46,16 @@ class ItemsController extends Controller
         if (isset($request->exclude_item_id) && $request->exclude_item_id !== '' && $request->exclude_item_id !== null) {
             $exclude_item_id = $request->exclude_item_id;
         }
+        if ($user !== null) {
+            if ($user->role !== 'staff') {
+                $itemQuery->where('enabled', 1);
+            }
+        } else {
 
+            $itemQuery->where('enabled', 1);
+        }
 
         $itemQuery->with($relationship)
-            ->where('enabled', 1)
             ->where('id', '!=', $exclude_item_id);
         if (isset($request->category_id) && $request->category_id !== '' && $request->category_id !== null) {
             $itemQuery->where('category_id', $request->category_id);
