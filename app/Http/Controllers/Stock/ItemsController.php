@@ -46,7 +46,7 @@ class ItemsController extends Controller
             $exclude_item_id = $request->exclude_item_id;
         }
 
-        if ($user) {
+        if ($user !== null) {
             if ($user->role !== 'staff') {
                 $itemQuery->where('enabled', 1);
             }
