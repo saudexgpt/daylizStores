@@ -35,6 +35,7 @@ class ItemsController extends Controller
      */
     public function index(Request $request)
     {
+        $user = $this->getUser();
         $itemQuery = Item::query();
         $exclude_item_id = NULL;
         $relationship = ['media', 'itemStocks' => function ($q) {
@@ -45,8 +46,12 @@ class ItemsController extends Controller
             $exclude_item_id = $request->exclude_item_id;
         }
 
+        if ($user) {
+            if ($user->role !== 'staff') {
+                $itemQuery->where('enabled', 1);
+            }
+        }
         $itemQuery->with($relationship)
-            ->where('enabled', 1)
             ->where('id', '!=', $exclude_item_id);
         if (isset($request->category_id) && $request->category_id !== '' && $request->category_id !== null) {
             $itemQuery->where('category_id', $request->category_id);
