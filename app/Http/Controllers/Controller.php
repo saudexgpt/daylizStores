@@ -222,7 +222,7 @@ class Controller extends BaseController
 
     public function __construct()
     {
-        $this->can_make_order = false;
+        // $this->can_make_order = false;
         // $this->middleware('guest')->except('logout');
         // $this->checkForNegativeTransitProduct();
         // $this->resetPartialInvoices();
@@ -317,7 +317,8 @@ class Controller extends BaseController
         $all_roles = Role::orderBy('name')->select('name')->get();
         $states = $this->states;
         $colors = $this->colors;
-        $can_make_order = $this->can_make_order;
+        $can_make_order = (bool) $this->settingValue('can_make_order');
+        // $can_make_order = $this->can_make_order;
         //$customer_types = CustomerType::get();
         return response()->json([
             'params' => compact('all_locations', 'company_name', 'company_contact', 'warehouses', 'items', 'currency', 'genders', 'all_roles', 'order_statuses', 'account_details', 'terms_and_conditions', 'states', 'colors', 'can_make_order')
