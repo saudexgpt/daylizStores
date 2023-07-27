@@ -323,7 +323,7 @@
                       </table>
                       <h4>Order Details</h4>
                       <table id="u_content_text_6" style="font-family:'Montserrat',sans-serif;" role="presentation"
-                        cellpadding="0" cellspacing="0" width="100%" border="0">
+                        cellpadding="1" cellspacing="1" width="100%" border="1">
                         <tr>
                           <th>Item</th>
                           <th>Quantity</th>
