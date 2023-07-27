@@ -190,7 +190,7 @@ class OrdersController extends Controller
     {
         $item_price = ItemPrice::where('item_id', $itemId)->first();
         $item_discounts = ItemDiscount::where('item_id', $itemId)->get();
-        $amount = $item_price->amount;
+        $amount = ($item_price) ? $item_price->amount : 0;
         if ($item_discounts->isNotEmpty()) {
             foreach ($item_discounts as $item_discount) {
                 $moq = $item_discount->minimum_order_quantity;
