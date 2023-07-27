@@ -12,6 +12,8 @@ use App\Models\Order\OrderStatus;
 use App\Models\Order\OrderItem;
 use App\Mail\CustomerCredentials;
 use App\Mail\OrderDetails;
+use App\Models\ItemDiscount;
+use App\Models\Stock\ItemPrice;
 use App\Models\Stock\ItemStock;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
@@ -184,10 +186,28 @@ class OrdersController extends Controller
         $order_history->save();
     }
 
+    private function calculateDiscountedAmount($itemId, $quantity)
+    {
+        $item_price = ItemPrice::where('item_id', $itemId)->first();
+        $item_discounts = ItemDiscount::where('item_id', $itemId)->get();
+        $amount = $item_price->amount;
+        if ($item_discounts->isNotEmpty()) {
+            foreach ($item_discounts as $item_discount) {
+                $moq = $item_discount->minimum_order_quantity;
+                if ($quantity >= $moq) {
+                    $amount = $item_discount->amount;
+                }
+            }
+        }
+        return $amount;
+    }
+
     private function createOrderItems($order, $order_items)
     {
         $total = 0;
         foreach ($order_items as $order_item) {
+            $quantity = $order_item->quantity;
+            $rate = $this->calculateDiscountedAmount($order_item->id, $quantity);
 
             $order_item_obj = new OrderItem();
             $order_item_obj->order_id = $order->id;
@@ -195,9 +215,9 @@ class OrdersController extends Controller
             $order_item_obj->item_id = $order_item->id;
             $order_item_obj->product_name = $order_item->name;
 
-            $order_item_obj->quantity = $order_item->quantity;
-            $order_item_obj->price = $order_item->rate;
-            $order_item_obj->total = $order_item->quantity * $order_item->rate;
+            $order_item_obj->quantity = $quantity;
+            $order_item_obj->price = $rate;
+            $order_item_obj->total = $order_item->quantity * $rate;
             $total += $order_item_obj->total;
             // $order_item_obj->tax = $order_item['tax'];
             $order_item_obj->save();
