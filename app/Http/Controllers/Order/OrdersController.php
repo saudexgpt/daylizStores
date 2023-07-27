@@ -130,8 +130,8 @@ class OrdersController extends Controller
     public function store(Request $request)
     {
         //
-        $can_make_order = (bool) $this->settingValue('can_make_order');
-        if ($can_make_order === false) {
+        $can_make_order = $this->settingValue('can_make_order');
+        if ($can_make_order === 'false') {
             return response()->json([], 500);
         }
         $order_items = json_decode(json_encode($request->cart_items));
