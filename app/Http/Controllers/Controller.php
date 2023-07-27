@@ -222,7 +222,7 @@ class Controller extends BaseController
 
     public function __construct()
     {
-        $this->can_make_order = true;
+        $this->can_make_order = false;
         // $this->middleware('guest')->except('logout');
         // $this->checkForNegativeTransitProduct();
         // $this->resetPartialInvoices();
