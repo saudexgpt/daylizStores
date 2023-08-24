@@ -19,8 +19,8 @@
         <aside>
           <el-row>
             <el-col :xs="24" :sm="24" :md="24">
-              <el-input v-model="order_number" placeholder="Search Order Number" class="no-border">
-                <el-button slot="append" :disabled="order_number === ''" type="primary" icon="el-icon-search" @click="searchOrderNumber" />
+              <el-input v-model="search_query" placeholder="Search by Order No. or Customer name or Customer Phone" class="no-border">
+                <el-button slot="append" :disabled="search_query === ''" type="primary" icon="el-icon-search" @click="searchOrderNumber" />
               </el-input>
             </el-col>
           </el-row>
@@ -137,7 +137,7 @@ export default {
       order: {},
       selected_row_index: '',
       load: false,
-      order_number: '',
+      search_query: '',
 
     };
   },
@@ -195,7 +195,7 @@ export default {
         });
     },
     searchOrderNumber() {
-      const param = { order_number: this.order_number };
+      const param = { search_query: this.search_query };
       this.load = true;
       const searchOrderNo = new Resource('order/general/search-order');
       searchOrderNo

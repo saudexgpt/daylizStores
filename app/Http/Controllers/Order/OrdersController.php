@@ -244,9 +244,21 @@ class OrdersController extends Controller
     }
     public function adminSearchOrder(Request $request)
     {
-        $order_number = $request->order_number;
-        $orders = Order::with(['customer', 'orderItems.item', 'orderItems.stock'])
-            ->where('order_number', $order_number)->get();
+        $keyword = $request->search_query;
+        $orderQuery = Order::query();
+        if ($keyword !== '') {
+            $orderQuery->where(function ($q) use ($keyword) {
+                $q->where('order_number', 'LIKE', '%' . $keyword . '%');
+                $q->orWhere(function ($q2) use ($keyword) {
+                    $q2->whereHas('customer', function ($q3) use ($keyword) {
+                        $q3->where('name', 'LIKE', '%' . $keyword . '%');
+                        $q3->orWhere('email', 'LIKE', '%' . $keyword . '%');
+                        $q3->orWhere('phone', 'LIKE', '%' . $keyword . '%');
+                    });
+                });
+            });
+        }
+        $orders = $orderQuery->with('customer', 'orderItems.item', 'orderItems.stock')->get();
         return response()->json(compact('orders'), 200);
     }
     public function search(Request $request)
