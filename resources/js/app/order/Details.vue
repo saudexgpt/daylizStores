@@ -22,19 +22,29 @@
       </div>
       <!-- /.col -->
       <div class="col-sm-4 invoice-col">
-        <!-- <label>Concerned Location</label>
-            <address>
-              <strong>{{ order.location.name.toUpperCase() }}</strong><br>
-            </address> -->
+        <label>Date:</label> {{ moment(order.created_at).format('MMMM Do YYYY, h:mm:ss a') }}<br>
+        <label>Pickup Area: </label> {{ order.location }}<br>
+        <label>Extra Note: </label> {{ order.notes }}
       </div>
       <!-- /.col -->
       <div class="col-sm-4 invoice-col">
         <!-- <label>Order Details</label><br> -->
         <h3>Order No.: {{ order.order_number }}</h3><br>
-        <label>Date:</label> {{ moment(order.created_at).format('MMMM Do YYYY, h:mm:ss a') }}<br>
-        <label>Pickup Area: </label> {{ order.location }}<br>
-        <label>Extra Note: </label> {{ order.notes }}
+        <aside>
+          <label for="">Uploaded Payment Receipt</label><br>
+          <small>Click to expand</small><br>
+          <img :src="order.receipt_image" width="150" style="cursor:pointer;" @click="enlargeImage = true">
+        </aside>
       </div>
+      <el-dialog
+        title="Payment Receipt"
+        :visible.sync="enlargeImage"
+      >
+        <img :src="order.receipt_image" width="500">
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="enlargeImage = false">Close</el-button>
+        </span>
+      </el-dialog>
       <!-- /.col -->
     </div>
     <!-- /.row -->
@@ -199,10 +209,10 @@
             </tbody>
           </table>
         </div>
-        <div v-if="!canUpdate && order.payment_status === 'pending'">
+        <!-- <div v-if="!canUpdate && order.payment_status === 'pending'">
           <el-alert type="error">Make your payment directly into any of our bank accounts stated below. Please use your Order Number as the payment reference. Your order will not be shipped until payment is made and confirmed.</el-alert>
           <span v-html="params.account_details" />
-        </div>
+        </div> -->
       </div>
       <!-- /.col -->
     </div>
@@ -245,6 +255,7 @@ export default {
         status: 'Pending',
         payment_status: 'pending',
       },
+      enlargeImage: false,
     };
   },
   computed: {

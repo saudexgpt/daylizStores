@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Intervention\Image\Facades\Image;
 
 class OrdersController extends Controller
 {
@@ -127,6 +128,36 @@ class OrdersController extends Controller
         }
         return array($limited_stock, $details);
     }
+    public function generateOrderNumber(Request $request)
+    {
+        //
+        $can_make_order = $this->settingValue('can_make_order');
+        if ($can_make_order === 'false') {
+            return response()->json([], 500);
+        }
+        $user = $this->registerCustomer($request);
+        $prefix = 'DS';
+        $order = Order::where('user_id', $user->id)->where('amount', NULL)->where('order_number', '!=', NULL)->first();
+        if (!$order) {
+
+            $order = new Order();
+            $order->user_id = $user->id;
+            if ($order->save()) {
+
+                $order->order_number = $this->getInvoiceNo($prefix, $order->id);
+            }
+            $order->save();
+        }
+        return response()->json(['order_number' => $order->order_number, 'order_id' => $order->id, 'user_id' => $order->user_id], 200);
+    }
+    private function uploadReciept($image)
+    {
+
+        $name = time() . '.' . $image->getClientOriginalExtension();
+        $folder = "storage/receipt";
+        $avatar = $image->storeAs($folder, $name, 'public');
+        return '/' . $avatar;
+    }
     public function store(Request $request)
     {
         //
@@ -145,10 +176,18 @@ class OrdersController extends Controller
             $location .= $loc . '/';
         }
         $user = $this->registerCustomer($request);
-        $prefix = 'DLZ';
+        // if ($request->user_id != NULL) {
+        //     $user = User::find($request->user_id);
+        // } else {
+
+        //     $user = $this->registerCustomer($request);
+        // }
+        $prefix = 'DS';
         $order = new Order();
         $order->location       = $location;
         $order->user_id         = $user->id;
+        $image = $request->file('receipt_image');
+        $order->receipt_image = $this->uploadReciept($image);
         // $order->subtotal            = $request->subtotal;
         // $order->discount            = $request->discount;
         // $order->tax                 = $request->tax;
@@ -160,7 +199,7 @@ class OrdersController extends Controller
         $order->notes               = $request->notes;
         $order->valid_till          = date('Y-m-d H:i:s', strtotime('+48 hours'));
         if ($order->save()) {
-            $order->order_number = $prefix . $order->id . randomNumber(); //$this->getInvoiceNo($prefix, $order->id);
+            $order->order_number = $this->getInvoiceNo($prefix, $order->id); //$prefix . $order->id . randomNumber(); //$this->getInvoiceNo($prefix, $order->id);
             $order->save();
             //log this action to order history
             // $this->createOrderHistory($order, $description);
@@ -168,7 +207,7 @@ class OrdersController extends Controller
             $order = $this->createOrderItems($order, $order_items);
 
 
-            Mail::to($user)->send(new OrderDetails($user, $order, $order_items));
+            // Mail::to($user)->send(new OrderDetails($user, $order, $order_items));
             $title = "New Order Made";
             $description = "New order ($order->order_number) was created by: $user->name ($user->phone)";
             $this->logUserActivity($title, $description);

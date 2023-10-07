@@ -21,6 +21,8 @@ $router->get('fetch-location', 'Location\LocationsController@fetchAllLocations')
 
 $router->post('stabilize-order-total', 'Order\OrdersController@stabilizeOrderTotal');
 $router->post('order/store', 'Order\OrdersController@store');
+$router->post('order/generate-order-number', 'Order\OrdersController@generateOrderNumber');
+
 $router->post('order/search', 'Order\OrdersController@search');
 $router->post('auth/login', 'AuthController@login');
 $router->post('auth/recover-password', 'AuthController@recoverPassword');

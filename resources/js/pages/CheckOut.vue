@@ -171,7 +171,17 @@
                 <tr>
                   <td colspan="2">
                     <div v-if="params">
-                      <el-alert type="error">Make your payment directly into any of our bank accounts stated below. Please use your Order Number as the payment reference. Your order will not be shipped until payment is made and confirmed.</el-alert>
+                      <el-alert type="error" :closable="false">Make your payment directly into any of our bank accounts stated below. Please use your Order Number as the payment reference. Your order will not be shipped until payment is made and confirmed.</el-alert>
+                      <!-- <div v-if="checkOutForm.order_number === null">
+                        <button class="btn btn-primary btn-lg" @click="generateOrderNo">
+                          Click To Generate Order Number
+                        </button>
+                      </div>
+                      <div v-else>
+                        <aside>
+                          <h4>Order No.: {{ checkOutForm.order_number }}</h4>
+                        </aside>
+                      </div> -->
                       <h3 class="section-title-footer ff-secondary text-start text-dark fw-normal mb-4">Pay To</h3>
                       <span v-html="params.account_details" />
                     </div>
@@ -179,9 +189,21 @@
                 </tr>
                 <tr>
                   <td colspan="2">
+                    <div>
+                      <label>Upload Payment Receipt<br> (image format only - jpg or png)</label>
+                      <input
+                        type="file"
+                        class="form-control"
+                        @change="onImageChange"
+                      >
+                    </div>
+                  </td>
+                </tr>
+                <tr v-if="imageToBeUploaded !== null">
+                  <td colspan="2">
                     <div><el-checkbox v-model="termsAgreed" /> I have read and agreed to the website <label><a @click="showTermsAndConditions = true">Terms and Conditions</a></label></div>
                     <button class="btn btn-success btn-lg" @click="submitOrder">
-                      Submit Order to generate Order Number
+                      Submit Order
                     </button>
                   </td>
                 </tr>
@@ -266,6 +288,9 @@ export default {
         notes: '',
         location_id: 1,
         location: '',
+        order_number: null,
+        order_id: null,
+        user_id: null,
       },
       options: [{
         value: 'Local Pickup',
@@ -282,6 +307,7 @@ export default {
       selected_location: {},
       amount: '',
       deliveryCost: 0.00,
+      imageToBeUploaded: null,
     };
   },
   computed: {
@@ -307,6 +333,19 @@ export default {
   methods: {
     moment,
     formatNumber,
+    onImageChange(e) {
+      const app = this;
+      app.imageToBeUploaded = null;
+      // console.log(e)
+      // eslint-disable-next-line prefer-destructuring
+      const file = e.target.files[0];
+      if (file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg') {
+        app.imageToBeUploaded = e.target.files[0];
+      } else {
+        app.$alert('Only Images are needed. Upload a JPEG or PNG format');
+        return false;
+      }
+    },
     setForm() {
       const app = this;
       app.checkOutForm.name = app.userData.name;
@@ -357,18 +396,56 @@ export default {
         app.load = false;
       });
     },
-    submitOrder() {
+    generateOrderNo() {
       const app = this;
       const form = app.checkOutForm;
-      form.cart_items = app.pendingOrder.cart_items;
-      form.amount = app.pendingOrder.amount;
-      form.total = app.amount;
-      form.delivery_cost = app.deliveryCost;
       if (form.name === '' || form.email === '' || form.phone === '' || form.address === '') {
         app.$alert('Kindly fill all the required fields (Name, Email, Phone, Address)');
         return false;
       }
-      if (form.location === '') {
+      app.load = true;
+      form.generate_order_number = true;
+      const orderNumberResource = new Resource('order/generate-order-number');
+      orderNumberResource.store(form).then(response => {
+        app.load = false;
+        app.checkOutForm.order_number = response.order_number;
+        app.checkOutForm.order_id = response.order_id;
+        app.checkOutForm.user_id = response.user_id;
+      }).catch(() => {
+        app.load = false;
+      });
+    },
+    submitOrder() {
+      const app = this;
+      const param = app.checkOutForm;
+      const formData = new FormData();
+      const cartItems = app.pendingOrder.cart_items;
+      const locations = param.location;
+      formData.append('name', param.name);
+      formData.append('receipt_image', app.imageToBeUploaded);
+      formData.append('email', param.email);
+      formData.append('nearest_bustop', param.nearest_bustop);
+      formData.append('address', param.address);
+      formData.append('notes', param.notes);
+      formData.append('location_id', param.location_id);
+      formData.append('amount', app.pendingOrder.amount);
+      formData.append('total', app.amount);
+      formData.append('delivery_cost', app.deliveryCost);
+      for (let index = 0; index < cartItems.length; index++) {
+        const eachItem = cartItems[index];
+        for (var prop in eachItem) {
+          formData.append(`cart_items[${index}][${prop}]`, eachItem[prop]);
+        }
+      }
+      for (let index = 0; index < locations.length; index++) {
+        formData.append('location[]', locations[index]);
+      }
+
+      if (param.name === '' || param.email === '' || param.phone === '' || param.address === '') {
+        app.$alert('Kindly fill all the required fields (Name, Email, Phone, Address)');
+        return false;
+      }
+      if (param.location === '') {
         app.$alert('Kindly specify your preferred delivery location');
         return false;
       }
@@ -380,7 +457,7 @@ export default {
       const storeOrder = new Resource('order/store');
       app.$alert(`Kindly note that goods left unpicked after 14 days is at owner's risk. We will not be held responsible for it. Thank you for your patronage.`);
       app.loading = true;
-      storeOrder.store(form).then(response => {
+      storeOrder.store(formData).then(response => {
         app.loading = false;
         if (response.message === 'check_cart') {
           const details = response.details;
