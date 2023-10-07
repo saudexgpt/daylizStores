@@ -207,7 +207,7 @@ class OrdersController extends Controller
             $order = $this->createOrderItems($order, $order_items);
 
 
-            // Mail::to($user)->send(new OrderDetails($user, $order, $order_items));
+            Mail::to($user)->send(new OrderDetails($user, $order, $order_items));
             $title = "New Order Made";
             $description = "New order ($order->order_number) was created by: $user->name ($user->phone)";
             $this->logUserActivity($title, $description);
