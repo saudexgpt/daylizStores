@@ -186,8 +186,8 @@
             <h3 class="section-title-footer ff-secondary text-start text-white fw-normal mb-4">Opening</h3>
             <h5 class="text-light fw-normal">Mondays - Fridays</h5>
             <p>10:00AM - 5:00PM</p><br>
-            <h5 class="text-light fw-normal">Saturdays</h5>
-            <p>12:00noon - 5:00PM</p>
+            <!-- <h5 class="text-light fw-normal">Saturdays</h5>
+            <p>12:00noon - 5:00PM</p> -->
           </el-col>
         </el-row>
       </div>
