@@ -449,13 +449,13 @@ class OrdersController extends Controller
         foreach ($orderItems as $orderItem) {
             $stock = $orderItem->stock;
             $order_quantity = $orderItem->quantity;
-            $reserved = $stock->reserved;
+            // $reserved = $stock->reserved;
 
-            if ($reserved >= $order_quantity) {
-                $stock->reserved += $order_quantity;
-                $stock->cancelled_quantity_reserved = $order_quantity;
-                $stock->save();
-            }
+            // if ($reserved >= $order_quantity) {
+            $stock->reserved += $order_quantity;
+            $stock->cancelled_quantity_reserved += $order_quantity;
+            $stock->save();
+            //}
         }
     }
     private function reverseOrderStatus($order, $status = 'pending')
