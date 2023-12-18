@@ -450,12 +450,13 @@ class OrdersController extends Controller
             $stock = $orderItem->stock;
             $order_quantity = $orderItem->quantity;
             // $reserved = $stock->reserved;
+            $stock_balance = $stock->quantity_stocked - $stock->reserved - $stock->sold;
 
-            // if ($reserved >= $order_quantity) {
-            $stock->reserved += $order_quantity;
+            if ($stock_balance >= $order_quantity) {
+                $stock->reserved += $order_quantity;
+            }
             $stock->cancelled_quantity_reserved += $order_quantity;
             $stock->save();
-            //}
         }
     }
     private function reverseOrderStatus($order, $status = 'pending')
