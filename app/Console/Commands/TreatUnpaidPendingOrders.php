@@ -56,8 +56,8 @@ class TreatUnpaidPendingOrders extends Command
     private function cancelUnpaidOrders()
     {
         set_time_limit(0);
-        $now = date('Y-m-d H:i:s', strtotime('now'));
-        Order::with('orderItems.stock')->where('valid_till', '<', $now)->where('payment_status', 'pending')
+        $twenty_one_days_ago = date('Y-m-d H:i:s', strtotime('-504 hours'));
+        Order::with('orderItems.stock')->where('valid_till', '<', $twenty_one_days_ago)->where('payment_status', 'pending')
             ->chunkById(200, function (Collection $orders) {
                 foreach ($orders as $order) {
                     $this->releasePendingUnpaidOrderQuantities($order);
@@ -68,6 +68,6 @@ class TreatUnpaidPendingOrders extends Command
     public function handle()
     {
         //
-        $this->cancelUnpaidOrders();
+        // $this->cancelUnpaidOrders();
     }
 }

@@ -43,8 +43,8 @@ class UserController extends Controller
     public function userNotifications()
     {
         $user = $this->getUser();
-        $notifications = $user->unreadNotifications()->orderBy('created_at', 'DESC')->get();
-        return response()->json(compact('notifications'), 200);
+        // $notifications = $user->unreadNotifications()->orderBy('created_at', 'DESC')->get();
+        // return response()->json(compact('notifications'), 200);
     }
     public function index(Request $request)
     {

@@ -312,7 +312,7 @@ class Controller extends BaseController
         $terms_and_conditions = $this->settingValue('terms_and_conditions');
 
         // $product_expiry_date_alert = $this->settingValue('product_expiry_date_alert_in_months');
-        $order_statuses = ['Pending', 'On Transit', 'Delivered', 'Cancelled'];
+        $order_statuses = ['Pending', 'CARP', 'On Transit', 'Delivered', 'Cancelled'];
         $genders = ['Men', 'Ladies', 'Boys', 'Girls'];
         $all_roles = Role::orderBy('name')->select('name')->get();
         $states = $this->states;

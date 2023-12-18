@@ -22,6 +22,7 @@ $router->get('fetch-location', 'Location\LocationsController@fetchAllLocations')
 $router->post('stabilize-order-total', 'Order\OrdersController@stabilizeOrderTotal');
 $router->post('order/store', 'Order\OrdersController@store');
 $router->post('order/generate-order-number', 'Order\OrdersController@generateOrderNumber');
+$router->get('reverse-bulk-cancelled-order', 'Order\OrdersController@reverseBulkCancelledOrder');
 
 $router->post('order/search', 'Order\OrdersController@search');
 $router->post('auth/login', 'AuthController@login');
@@ -41,7 +42,6 @@ $router->get('all-items', 'Stock\ItemsController@fetchAllItems');
 $router->post('give-product-review', 'Stock\ItemsController@giveReview');
 
 $router->get('fetch-necessary-params', 'Controller@fetchNecessayParams');
-
 
 $router->group(['middleware' => 'auth:api'], function () use ($router) {
 

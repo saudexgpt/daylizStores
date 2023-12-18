@@ -153,7 +153,7 @@ class OrdersController extends Controller
     private function uploadReciept($image)
     {
 
-        $name = time() . '.' . $image->getClientOriginalExtension();
+        $name = randomNumber() . time() . '.' . $image->getClientOriginalExtension();
         $folder = "storage/receipt";
         $avatar = $image->storeAs($folder, $name, 'public');
         return '/' . $avatar;
@@ -424,6 +424,46 @@ class OrdersController extends Controller
                 $stock->save();
             }
         }
+    }
+    public function reverseCancelledOrder(Request $request, Order $order)
+    {
+        $this->reserveOrderQuantities($order);
+        $this->reverseOrderStatus($order, $request->status);
+    }
+
+
+    public function reverseBulkCancelledOrder()
+    {
+        set_time_limit(0);
+        Order::with('orderItems.stock')->where('order_status', 'Cancelled')->where('payment_status', 'cancelled')->where('updated_at', 'LIKE', '%2023-12-14%')
+            ->chunkById(200, function (Collection $orders) {
+                foreach ($orders as $order) {
+                    $this->reserveOrderQuantities($order);
+                    $this->reverseOrderStatus($order);
+                }
+            }, $column = 'id');
+    }
+    private function reserveOrderQuantities($order)
+    {
+        $orderItems = $order->orderItems;
+        foreach ($orderItems as $orderItem) {
+            $stock = $orderItem->stock;
+            $order_quantity = $orderItem->quantity;
+            $reserved = $stock->reserved;
+
+            if ($reserved >= $order_quantity) {
+                $stock->reserved += $order_quantity;
+                $stock->cancelled_quantity_reserved = $order_quantity;
+                $stock->save();
+            }
+        }
+    }
+    private function reverseOrderStatus($order, $status = 'pending')
+    {
+        $order->order_status = 'CARP';
+        $order->payment_status = 'carp';
+        $order->cancelled_status_reversed = 1;
+        $order->save();
     }
 
     /**
