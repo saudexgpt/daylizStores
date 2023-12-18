@@ -435,17 +435,22 @@ class OrdersController extends Controller
     public function reverseBulkCancelledOrder()
     {
         set_time_limit(0);
-        Order::with('orderItems.stock')->where('order_status', 'Cancelled')->where('payment_status', 'cancelled')->where('updated_at', 'LIKE', '%2023-12-14%')
-            ->chunkById(200, function (Collection $orders) {
-                foreach ($orders as $order) {
-                    $this->reserveOrderQuantities($order);
-                    $this->reverseOrderStatus($order);
-                }
-            }, $column = 'id');
+        // Order::with('orderItems.stock')->where('order_status', 'Cancelled')->where('payment_status', 'cancelled')->where('updated_at', 'LIKE', '%2023-12-14%')
+        //     ->chunkById(200, function (Collection $orders) {
+        //         foreach ($orders as $order) {
+        //             $this->reserveOrderQuantities($order->orderItems);
+        //             $this->reverseOrderStatus($order);
+        //         }
+        //     }, $column = 'id');
+        $orders = Order::with('orderItems.stock')->where('order_status', 'Cancelled')->where('payment_status', 'cancelled')->where('updated_at', 'LIKE', '%2023-12-14%')->get();
+        foreach ($orders as $order) {
+            $this->reserveOrderQuantities($order->orderItems);
+            $this->reverseOrderStatus($order);
+        }
     }
-    private function reserveOrderQuantities($order)
+    private function reserveOrderQuantities($orderItems)
     {
-        $orderItems = $order->orderItems;
+        // $orderItems = $order->orderItems;
         foreach ($orderItems as $orderItem) {
             $stock = $orderItem->stock;
             $order_quantity = $orderItem->quantity;
@@ -459,7 +464,7 @@ class OrdersController extends Controller
             $stock->save();
         }
     }
-    private function reverseOrderStatus($order, $status = 'pending')
+    private function reverseOrderStatus($order)
     {
         $order->order_status = 'CARP';
         $order->payment_status = 'carp';
