@@ -38,6 +38,7 @@
           </div>
           <div slot="action" slot-scope="props">
             <a class="btn btn-primary" @click="order=props.row; page.option='order_details'"><i class="el-icon-tickets" /></a>
+            <a v-if="props.row.bulk_order_cancellation === 1" class="btn btn-danger" @click="undoCancellation(props.index, props.row);">Reverse Cancellation</a>
             <!-- <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
               <div class="avatar-wrapper" style="color: brown">
                 <label style="cursor:pointer"><i class="el-icon-more-outline" /></label>
@@ -232,6 +233,18 @@ export default {
         .then(response => {
           app.orders.splice(index - 1, 1);
         });
+    },
+    undoCancellation(index, order) {
+      const app = this;
+      if (confirm('Confirm Action')) {
+        const param = { status: 'carp' };
+        const reverseOrderResource = new Resource('order/general/reverse-cancellation');
+        reverseOrderResource.update(order.id, param)
+          .then(response => {
+            app.orders.splice(index - 1, 1);
+            app.$message('Reversal Completed');
+          });
+      }
     },
     doPrint() {
       window.print();

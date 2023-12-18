@@ -285,6 +285,12 @@ class OrdersController extends Controller
     {
         $keyword = $request->search_query;
         $orderQuery = Order::query();
+        $condition2 = [];
+        if (isset($request->status) && $request->status != '') {
+            ////// query by status //////////////
+            $status = $request->status;
+            $condition2 = ['order_status' => $status];
+        }
         if ($keyword !== '') {
             $orderQuery->where(function ($q) use ($keyword) {
                 $q->where('order_number', 'LIKE', '%' . $keyword . '%');
@@ -297,7 +303,7 @@ class OrdersController extends Controller
                 });
             });
         }
-        $orders = $orderQuery->with('customer', 'orderItems.item', 'orderItems.stock')->get();
+        $orders = $orderQuery->where($condition2)->with('customer', 'orderItems.item', 'orderItems.stock')->get();
         return response()->json(compact('orders'), 200);
     }
     public function search(Request $request)
@@ -425,9 +431,10 @@ class OrdersController extends Controller
             }
         }
     }
-    public function reverseCancelledOrder(Request $request, Order $order)
+
+    public function reverseOrderCancellation(Request $request, Order $order)
     {
-        $this->reserveOrderQuantities($order);
+        $this->reserveOrderQuantities($order->orderItems);
         $this->reverseOrderStatus($order, $request->status);
     }
 

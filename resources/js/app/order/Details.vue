@@ -93,7 +93,7 @@
                 <label>Payment Status: {{ order.payment_status }}</label>
               </td>
             </tr>
-            <tr v-if="form.status !== 'Cancelled' && order.payment_status === 'pending' && canUpdate">
+            <tr v-if="form.status !== 'Cancelled' && (order.payment_status === 'pending' || order.payment_status === 'carp') && canUpdate">
               <td colspan="4" align="right">
                 <a
                   class="btn btn-success"
@@ -122,6 +122,11 @@
           <br>
           <label>Order delivery is pending</label>
         </div>
+        <div v-if="order.order_status === 'CARP'">
+          <img src="/images/pending.png" alt="Pending" width="150">
+          <br>
+          <label>Order is CARP (Cancellation Reversed to Pending)</label>
+        </div>
         <div v-else-if="order.order_status === 'On Transit'">
           <img src="/images/transit.png" alt="Transition" width="150">
           <br>
@@ -141,7 +146,7 @@
       <!-- /.col -->
       <div class="col-xs-12 col-sm-6 col-md-6">
         <div v-if="canUpdate">
-          <div v-if="order.payment_status === 'paid' && order.order_status === 'Pending'">
+          <div v-if="order.payment_status === 'paid' && (order.order_status === 'Pending' || order.order_status === 'CARP')">
             <a
               class="btn btn-primary"
               @click="form.status = 'On Transit'; changeOrderStatus()"

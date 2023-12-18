@@ -162,6 +162,7 @@ $router->group(['middleware' => 'auth:api'], function () use ($router) {
             // $router->put('deliver/{order}', 'OrdersController@changeOrderStatus')->middleware('permission:approve order');
 
             // $router->put('cancel/{order}', 'OrdersController@changeOrderStatus')->middleware('permission:cancel order');
+            $router->put('reverse-cancellation/{order}', 'OrdersController@reverseOrderCancellation');
 
             $router->put('assign-order-to-location/{order}', 'OrdersController@assignOrderToLocation'); //->middleware('permission:assign order to location');
         });
