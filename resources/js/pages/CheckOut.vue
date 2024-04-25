@@ -491,6 +491,12 @@ export default {
           });
         } else {
           const orderDetails = response.order_details;
+          const pendingOrder = {
+            amount: 0,
+            cart_items: [],
+          };
+          app.$store.dispatch('order/setCartItems', []);
+          app.$store.dispatch('order/setPendingOrder', pendingOrder);
           this.$alert(`<div align="center">
             <div style="border: dashed 2px #47cf2c; padding: 10px; color: #47cf2c"><label>Thank you. We have received your order</label></div>
             <table class="table table-bordered">
@@ -523,15 +529,10 @@ export default {
           </div>`, 'Order Placed Successfully', {
             dangerouslyUseHTMLString: true,
           });
-          const pendingOrder = {
-            amount: 0,
-            cart_items: [],
-          };
-          app.$store.dispatch('order/setCartItems', []);
-          app.$store.dispatch('order/setPendingOrder', pendingOrder);
           app.$router.push({ path: '/track/order' });
         }
       }).catch(err => {
+        app.$alert(err.response.data.message);
         console.log(err);
         app.loading = false;
       });

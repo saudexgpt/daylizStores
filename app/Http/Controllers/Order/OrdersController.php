@@ -165,7 +165,7 @@ class OrdersController extends Controller
         //
         $can_make_order = $this->settingValue('can_make_order');
         if ($can_make_order === 'false') {
-            return response()->json([], 500);
+            return response()->json(['message' => 'Order placement is disabled for now'], 500);
         }
         $order_items = json_decode(json_encode($request->cart_items));
         list($limited_stock, $details) = $this->checkStockBeforeOrdering($order_items);
@@ -218,7 +218,6 @@ class OrdersController extends Controller
         }
         return response()->json(['order_details' => $order, 'message' => 'success'], 200);
     }
-
     private function createOrderHistory($order, $description)
     {
         $order_history = new OrderHistory();
