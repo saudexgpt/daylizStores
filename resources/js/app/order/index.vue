@@ -196,14 +196,23 @@ export default {
         });
     },
     searchOrderNumber() {
-      const param = { search_query: this.search_query };
-      this.load = true;
+      const app = this;
+      const { limit, page } = app.form;
+      const param = { search_query: app.search_query };
+      app.load = true;
       const searchOrderNo = new Resource('order/general/search-order');
       searchOrderNo
         .list(param)
         .then((response) => {
-          this.orders = response.orders;
-          this.load = false;
+          app.orders = response.orders.data;
+          app.orders.forEach((element, index) => {
+            element['index'] = (page - 1) * limit + index + 1;
+          });
+          app.total = response.orders.total;
+          //  app.in_location = 'in ' + app.locations[param.location_index].name;
+          app.load = false;
+          // this.orders = response.orders;
+          // this.load = false;
         })
         .catch((error) => {
           console.log(error);

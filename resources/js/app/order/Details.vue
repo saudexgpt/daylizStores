@@ -83,10 +83,10 @@
             </tr> -->
             <tr>
               <td colspan="3" align="right"><label>Grand Total</label></td>
-              <td align="right"><label style="color: green">{{ currency + formatNumber(order.total, 2).toLocaleString() }}</label></td>
+              <td align="right"><label style="color: green">{{ currency + formatNumber(grandTotal, 2).toLocaleString() }}</label></td>
             </tr>
             <tr>
-              <td colspan="4" align="right"><label>In Words: {{ inWords(order.total).toUpperCase() + ' NAIRA ONLY' }}</label></td>
+              <td colspan="4" align="right"><label>In Words: {{ inWords(grandTotal).toUpperCase() + ' NAIRA ONLY' }}</label></td>
             </tr>
             <tr v-if="!canUpdate">
               <td colspan="4" align="right">
@@ -261,6 +261,7 @@ export default {
         payment_status: 'pending',
       },
       enlargeImage: false,
+      grandTotal: 0,
     };
   },
   computed: {
@@ -269,12 +270,22 @@ export default {
     },
   },
   created() {
+    this.calculateGrandTotal();
     this.form.status = this.order.order_status;
     this.form.payment_status = this.order.payment_status;
   },
   methods: {
     moment,
     formatNumber,
+    calculateGrandTotal() {
+      const app = this;
+      const orderItems = app.order.order_items;
+      let total = 0;
+      orderItems.forEach(item => {
+        total += item.total;
+      });
+      app.grandTotal = total;
+    },
     onSubmit() {
       this.updating = true;
       orderResource

@@ -171,7 +171,7 @@
                 <tr>
                   <td colspan="2">
                     <div v-if="params">
-                      <el-alert type="error" :closable="false">Make your payment directly into any of our bank accounts stated below. Please use your Order Number as the payment reference. Your order will not be shipped until payment is made and confirmed.</el-alert>
+                      <el-alert type="error" :closable="false">Make your payment directly into any of our bank accounts stated below. Your order will not be shipped until payment is made and confirmed.</el-alert>
                       <!-- <div v-if="checkOutForm.order_number === null">
                         <button class="btn btn-primary btn-lg" @click="generateOrderNo">
                           Click To Generate Order Number

@@ -45,7 +45,9 @@ class OrdersController extends Controller
             $condition2 = ['order_status' => $status];
         }
         $orders = Order::with([
-            'customer', 'orderItems.item', 'orderItems.stock'
+            'customer',
+            'orderItems.item',
+            'orderItems.stock'
         ])->where($condition)->where($condition2)->orderBy('id', 'DESC')->paginate($request->limit);
         return response()->json(compact('orders'));
     }
@@ -184,20 +186,20 @@ class OrdersController extends Controller
         // }
         $prefix = 'DS';
         $order = new Order();
-        $order->location       = $location;
-        $order->user_id         = $user->id;
+        $order->location = $location;
+        $order->user_id = $user->id;
         $image = $request->file('receipt_image');
         $order->receipt_image = $this->uploadReciept($image);
         // $order->subtotal            = $request->subtotal;
         // $order->discount            = $request->discount;
         // $order->tax                 = $request->tax;
-        $order->delivery_cost       = $request->delivery_cost;
-        $order->amount              = $request->amount;
-        $order->total               = $request->total;
-        $order->nearest_bustop      = $request->nearest_bustop;
-        $order->address             = $request->address;
-        $order->notes               = $request->notes;
-        $order->valid_till          = date('Y-m-d H:i:s', strtotime('+504 hours')); // 21 days
+        $order->delivery_cost = $request->delivery_cost;
+        $order->amount = $request->amount;
+        $order->total = $request->total;
+        $order->nearest_bustop = $request->nearest_bustop;
+        $order->address = $request->address;
+        $order->notes = $request->notes;
+        $order->valid_till = date('Y-m-d H:i:s', strtotime('+504 hours')); // 21 days
         if ($order->save()) {
             $order->order_number = $this->getInvoiceNo($prefix, $order->id); //$prefix . $order->id . randomNumber(); //$this->getInvoiceNo($prefix, $order->id);
             $order->save();
@@ -303,7 +305,7 @@ class OrdersController extends Controller
                 });
             });
         }
-        $orders = $orderQuery->where($condition2)->with('customer', 'orderItems.item', 'orderItems.stock')->get();
+        $orders = $orderQuery->where($condition2)->with('customer', 'orderItems.item', 'orderItems.stock')->paginate(10);
         return response()->json(compact('orders'), 200);
     }
     public function search(Request $request)
@@ -337,8 +339,11 @@ class OrdersController extends Controller
     public function show(Order $order)
     {
         //
-        $order =  $order->with([
-            'customer.user', 'customer.type', 'orderItems.item', 'histories' => function ($q) {
+        $order = $order->with([
+            'customer.user',
+            'customer.type',
+            'orderItems.item',
+            'histories' => function ($q) {
                 $q->orderBy('id', 'DESC');
             },
             'currency'
