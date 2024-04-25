@@ -305,7 +305,7 @@ class OrdersController extends Controller
                 });
             });
         }
-        $orders = $orderQuery->where($condition2)->with('customer', 'orderItems.item', 'orderItems.stock')->paginate(10);
+        $orders = $orderQuery->where($condition2)->with('customer', 'orderItems.item', 'orderItems.stock')->get();
         return response()->json(compact('orders'), 200);
     }
     public function search(Request $request)
