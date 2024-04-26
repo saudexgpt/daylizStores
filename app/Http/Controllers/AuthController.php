@@ -79,13 +79,14 @@ class AuthController extends Controller
         }
 
         $user = $request->user();
-        $token = $user->createToken('laravue');
+        $tokenResult = $user->createToken('laravue');
         $user_resource = new UserResource($user);
+        $token = $tokenResult->plainTextToken;
         // $title = "Log in action";
         // $description = $user->name . ' logged in to the portal';
         // $this->logUserActivity($title, $description);
 
-        return response()->json($user_resource, Response::HTTP_OK)->header('Authorization', $token->plainTextToken);
+        return response()->json(['data' => $user_resource, 'token' => $token], Response::HTTP_OK)->header('Authorization', $token);
     }
 
     public function logout(Request $request)
