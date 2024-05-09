@@ -196,6 +196,7 @@ class OrdersController extends Controller
         $order = new Order();
         $order->location = $location;
         $order->user_id = $user->id;
+        $order->order_uniq_id = $request->order_uniq_id;
         $image = $request->file('receipt_image');
         $order->receipt_image = $this->uploadReciept($image);
         // $order->subtotal            = $request->subtotal;
