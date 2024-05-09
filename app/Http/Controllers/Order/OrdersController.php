@@ -167,6 +167,11 @@ class OrdersController extends Controller
         if ($can_make_order === 'false') {
             return response()->json(['message' => 'Order placement is disabled for now'], 500);
         }
+        // check if order is made already
+        $order_made = Order::where('order_uniq_id', $request->order_uniq_id)->first();
+        if ($order_made) {
+            return response()->json(['message' => "This order is already submitted. Your order number is: $order_made->order_number"], 500);
+        }
         $order_items = json_decode(json_encode($request->cart_items));
         list($limited_stock, $details) = $this->checkStockBeforeOrdering($order_items);
         if ($limited_stock === true) {
@@ -208,13 +213,13 @@ class OrdersController extends Controller
             //create items ordered for
             $order = $this->createOrderItems($order, $order_items);
 
+            // we need to reserve the product for at least 24 hours to reduce stock so that no issue will arise
+            $this->reserveProduct($order->id);
 
             Mail::to($user)->send(new OrderDetails($user, $order, $order_items));
             $title = "New Order Made";
             $description = "New order ($order->order_number) was created by: $user->name ($user->phone)";
             $this->logUserActivity($title, $description);
-            // we need to reserve the product for at least 24 hours to reduce stock so that no issue will arise
-            $this->reserveProduct($order->id);
         }
         return response()->json(['order_details' => $order, 'message' => 'success'], 200);
     }

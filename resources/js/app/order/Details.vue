@@ -391,9 +391,10 @@ export default {
       if (confirm(message)) {
         param.status = app.form.status;
         param.payment_status = app.form.payment_status;
+        app.order.order_status = app.form.status;
         changeOrderStatusResource.update(param.id, param)
           .then(response => {
-            app.order.order_status = app.form.status;
+            // app.order.order_status = app.form.status;
             // if (app.form.status === 'On Transit') {
             //   app.print_waybill = true;
             // }

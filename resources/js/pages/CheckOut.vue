@@ -268,6 +268,7 @@
 import moment from 'moment';
 import 'mdbvue/lib/css/mdb.min.css';
 import { formatNumber } from '@/utils/index';
+import { createUniqueString } from '@/utils/index';
 import Resource from '@/api/resource';
 export default {
   name: 'CheckOut',
@@ -280,6 +281,7 @@ export default {
       selectedItem: null,
       loading: false,
       checkOutForm: {
+        order_uniq_id: '',
         name: '',
         phone: '',
         email: '',
@@ -333,6 +335,7 @@ export default {
   methods: {
     moment,
     formatNumber,
+    createUniqueString,
     onImageChange(e) {
       const app = this;
       app.imageToBeUploaded = null;
@@ -348,6 +351,7 @@ export default {
     },
     setForm() {
       const app = this;
+      app.checkOutForm.order_uniq_id = app.createUniqueString();
       app.checkOutForm.name = app.userData.name;
       app.checkOutForm.email = app.userData.email;
       app.checkOutForm.phone = app.userData.phone;
@@ -421,6 +425,7 @@ export default {
       const formData = new FormData();
       const cartItems = app.pendingOrder.cart_items;
       const locations = param.location;
+      formData.append('order_uniq_id', param.order_uniq_id);
       formData.append('name', param.name);
       formData.append('receipt_image', app.imageToBeUploaded);
       formData.append('email', param.email);
