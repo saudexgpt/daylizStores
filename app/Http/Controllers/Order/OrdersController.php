@@ -167,6 +167,9 @@ class OrdersController extends Controller
         if ($can_make_order === 'false') {
             return response()->json(['message' => 'Order placement is disabled for now'], 500);
         }
+        if (!isset($request->order_uniq_id)) {
+            return response()->json(['message' => 'There is a system update. Please clear your browsing history/cache and reload your page.'], 500);
+        }
         // check if order is made already
         $order_made = Order::where('order_uniq_id', $request->order_uniq_id)->first();
         if ($order_made) {
