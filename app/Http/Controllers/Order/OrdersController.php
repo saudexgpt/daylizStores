@@ -170,13 +170,13 @@ class OrdersController extends Controller
         // check if order is made already
         $order_made = Order::where('order_uniq_id', $request->order_uniq_id)->first();
         if ($order_made) {
-            return response()->json(['message' => "This order is already submitted. Your order number is: $order_made->order_number"], 500);
+            return response()->json(['message' => 'order_made_already', 'order_details' => $order_made], 200);
         }
         $order_items = json_decode(json_encode($request->cart_items));
         list($limited_stock, $details) = $this->checkStockBeforeOrdering($order_items);
         if ($limited_stock === true) {
             $message = 'check_cart';
-            return response()->json(compact('details', 'message'), 206);
+            return response()->json(compact('details', 'message'), 200);
         }
         $location = '';
         foreach ($request->location as $loc) {

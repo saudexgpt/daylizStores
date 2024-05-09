@@ -464,7 +464,10 @@ export default {
       app.loading = true;
       storeOrder.store(formData).then(response => {
         app.loading = false;
-        if (response.message === 'check_cart') {
+        if (response.message === 'order_made_already') {
+          app.showOrderDetails(response.order_details);
+          app.$router.push({ path: '/track/order' });
+        } else if (response.message === 'check_cart') {
           const details = response.details;
           let table_row = '';
           details.forEach(detail => {
@@ -495,14 +498,24 @@ export default {
             dangerouslyUseHTMLString: true,
           });
         } else {
-          const orderDetails = response.order_details;
-          const pendingOrder = {
-            amount: 0,
-            cart_items: [],
-          };
-          app.$store.dispatch('order/setCartItems', []);
-          app.$store.dispatch('order/setPendingOrder', pendingOrder);
-          this.$alert(`<div align="center">
+          app.showOrderDetails(response.order_details);
+          app.$router.push({ path: '/track/order' });
+        }
+      }).catch(err => {
+        app.$alert(err.response.data.message);
+        console.log(err);
+        app.loading = false;
+      });
+    },
+    showOrderDetails(orderDetails){
+      const app = this;
+      const pendingOrder = {
+        amount: 0,
+        cart_items: [],
+      };
+      app.$store.dispatch('order/setCartItems', []);
+      app.$store.dispatch('order/setPendingOrder', pendingOrder);
+      this.$alert(`<div align="center">
             <div style="border: dashed 2px #47cf2c; padding: 10px; color: #47cf2c"><label>Thank you. We have received your order</label></div>
             <table class="table table-bordered">
               <tbody>
@@ -532,14 +545,7 @@ export default {
             <div>Please use your <label>Order Number</label> as your payment reference and for Tracking</div>
             <p>Your order details was also sent to the email you provided</p>
           </div>`, 'Order Placed Successfully', {
-            dangerouslyUseHTMLString: true,
-          });
-          app.$router.push({ path: '/track/order' });
-        }
-      }).catch(err => {
-        app.$alert(err.response.data.message);
-        console.log(err);
-        app.loading = false;
+        dangerouslyUseHTMLString: true,
       });
     },
   },
