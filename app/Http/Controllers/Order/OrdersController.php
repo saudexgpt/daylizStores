@@ -20,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Validator;
 
 class OrdersController extends Controller
 {
@@ -169,6 +170,15 @@ class OrdersController extends Controller
         }
         if (!isset($request->order_uniq_id)) {
             return response()->json(['message' => 'There is a system update. Please clear your browsing history/cache and reload your page.'], 500);
+        }
+        $rules = [
+            'email' => ['required', 'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/'],
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Please provide a valid email address'], 500);
         }
         // check if order is made already
         $order_made = Order::where('order_uniq_id', $request->order_uniq_id)->first();

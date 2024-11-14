@@ -28,8 +28,8 @@
         >
           <h3 class="section-title-footer ff-secondary text-center text-primary-custom fw-normal mb-4">Contact</h3>
           <p class="mb-2"><i class="fa fa-map-marker-alt me-3" />
-            Shop D13, Ayobo garage complex,<br>
-            Ayobo garage after Megida bus stop,<br>
+            23, Golden Bimot Plaza, Opposite Musec Filling Station,<br>
+            Ashipa Road, Amule bus stop,<br>
             Ayobo-Ipaja,<br>
             Lagos, Nigeria
           </p>

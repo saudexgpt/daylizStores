@@ -460,7 +460,7 @@ export default {
       }
 
       const storeOrder = new Resource('order/store');
-      app.$alert(`Kindly note that goods left unpicked after 14 days is at owner's risk. We will not be held responsible for it. Thank you for your patronage.`);
+      app.$alert(app.params.pickup_warning);
       app.loading = true;
       storeOrder.store(formData).then(response => {
         app.loading = false;

@@ -36,6 +36,11 @@
           <div slot="created_at" slot-scope="props">
             {{ moment(props.row.created_at).format('MMMM Do YYYY, h:mm:ss a') }}
           </div>
+          <div slot="updated_at" slot-scope="props">
+            <div v-if="props.row.order_status === 'Delivered'">
+              {{ moment(props.row.updated_at).format('MMMM Do YYYY, h:mm:ss a') }}
+            </div>
+          </div>
           <div slot="action" slot-scope="props">
             <a class="btn btn-primary" @click="order=props.row; page.option='order_details'"><i class="el-icon-tickets" /></a>
             <a v-if="props.row.bulk_order_cancellation === 1" class="btn btn-danger" @click="undoCancellation(props.index, props.row);">Reverse Cancellation</a>
@@ -101,7 +106,7 @@ export default {
       locations: [{ id: 'all', name: 'All Locations' }],
       orders: [],
       order_statuses: [],
-      columns: ['action', 'order_number', 'customer.name', 'total', 'created_at', 'order_status', 'payment_status'],
+      columns: ['action', 'order_number', 'customer.name', 'total', 'created_at', 'order_status', 'payment_status', 'updated_at'],
 
       options: {
         headings: {
@@ -111,6 +116,7 @@ export default {
           created_at: 'Date',
           order_status: 'Status',
           payment_status: 'Payment',
+          updated_at: 'Delivery Date',
 
           // id: 'S/N',
         },
