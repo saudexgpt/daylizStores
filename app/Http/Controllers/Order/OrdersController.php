@@ -381,19 +381,22 @@ class OrdersController extends Controller
         $user = $this->getUser();
         $status = $request->status;
         $payment_status = $request->payment_status;
-        if ($request->payment_status === 'paid') {
+        if ($request->payment_status == 'paid') {
             $description = "Order ($order->order_number) has been paid for. Payment logged by: $user->name ($user->email)";
             $title = "Order Payment Made";
             $this->logUserActivity($title, $description);
         }
-        if ($status === 'On Transit') {
+        if ($status == 'On Transit') {
             $this->sellOutFromStock($order->id);
         }
-        if ($status === 'Cancelled') {
+        if ($status == 'Cancelled') {
             $this->releasePendingUnpaidOrderQuantities($order);
         }
-
-        $order->order_status = $status;
+        if ($status == 'On Transit' || $status == 'Delivered') {
+            $order->order_status = 'Delivered';
+        } else {
+            $order->order_status = $status;
+        }
         $order->payment_status = $payment_status;
         $order->save();
         $description = "Order ($order->order_number) status changed to " . strtoupper($order->order_status) . " by: $user->name ($user->email)";
