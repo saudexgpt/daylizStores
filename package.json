@@ -1,7 +1,7 @@
 {
-  "name": "laravue",
+  "name": "daylizstores",
   "version": "0.11.0",
-  "description": "A beautiful dashboard for Laravel built by VueJS",
+  "description": "A small scale e-commerce website",
   "author": "Tuan Duong <bacduong@gmail.com>",
   "license": "MIT",
   "private": true,
