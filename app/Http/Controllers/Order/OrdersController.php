@@ -229,11 +229,15 @@ class OrdersController extends Controller
 
             // we need to reserve the product for at least 24 hours to reduce stock so that no issue will arise
             $this->reserveProduct($order->id);
+            try {
+                Mail::to($user)->send(new OrderDetails($user, $order, $order_items));
+                $title = "New Order Made";
+                $description = "New order ($order->order_number) was created by: $user->name ($user->phone)";
+                $this->logUserActivity($title, $description);
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
 
-            // Mail::to($user)->send(new OrderDetails($user, $order, $order_items));
-            // $title = "New Order Made";
-            // $description = "New order ($order->order_number) was created by: $user->name ($user->phone)";
-            // $this->logUserActivity($title, $description);
         }
         return response()->json(['order_details' => $order, 'message' => 'success'], 200);
     }
