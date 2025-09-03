@@ -84,7 +84,7 @@ class OrdersController extends Controller
             $user->save();
             // send login credentials email to user here
 
-            Mail::to($user)->send(new CustomerCredentials($user, $password));
+            // Mail::to($user)->send(new CustomerCredentials($user, $password));
             return $user;
         }
         $user->address = $data->address;
