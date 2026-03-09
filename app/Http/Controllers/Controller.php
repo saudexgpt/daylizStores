@@ -285,7 +285,7 @@ class Controller extends BaseController
 
     public function setUser()
     {
-        $this->user  = new UserResource(Auth::user());
+        $this->user = new UserResource(Auth::user());
     }
 
     public function getUser()
@@ -318,10 +318,11 @@ class Controller extends BaseController
         $states = $this->states;
         $colors = $this->colors;
         $can_make_order = (bool) $this->settingValue('can_make_order');
+        $pickup_warning = (bool) $this->settingValue('pickup_warning');
         // $can_make_order = $this->can_make_order;
         //$customer_types = CustomerType::get();
         return response()->json([
-            'params' => compact('all_locations', 'company_name', 'company_contact', 'warehouses', 'items', 'currency', 'genders', 'all_roles', 'order_statuses', 'account_details', 'terms_and_conditions', 'states', 'colors', 'can_make_order')
+            'params' => compact('all_locations', 'company_name', 'company_contact', 'warehouses', 'items', 'currency', 'genders', 'all_roles', 'order_statuses', 'account_details', 'terms_and_conditions', 'states', 'colors', 'can_make_order', 'pickup_warning')
         ]);
     }
     public function settingValue($key)
