@@ -2,10 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Laravue\Models\User;
+use App\Mail\OrderDetails;
 use Illuminate\Console\Command;
 use App\Models\Order\OrderItem;
 use App\Models\Order\Order;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Mail;
 
 class TreatUnpaidPendingOrders extends Command
 {
@@ -65,8 +68,17 @@ class TreatUnpaidPendingOrders extends Command
                 }
             }, $column = 'id');
     }
+
+    private function testEmailSending()
+    {
+        $user = User::where('email', 'saudexgpt@gmail.com')->first();
+        $order = Order::with('orderItems.stock.product', 'orderItems.stock')->orderBy('id', 'DESC')->first();
+        $order_items = $order->orderItems;
+        Mail::to($user)->send(new OrderDetails($user, $order, $order_items));
+    }
     public function handle()
     {
+        $this->testEmailSending();
         //
         // $this->cancelUnpaidOrders();
     }
