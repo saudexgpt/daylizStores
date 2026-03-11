@@ -72,8 +72,20 @@ class TreatUnpaidPendingOrders extends Command
     private function testEmailSending()
     {
         $user = User::where('email', 'saudexgpt@gmail.com')->first();
-        $order = Order::with('orderItems.stock.product', 'orderItems.stock')->orderBy('id', 'DESC')->first();
-        $order_items = $order->orderItems;
+        $order = Order::orderBy('id', 'DESC')->first();
+        $items = [
+            [
+                'name' => 'Benz',
+                'quantity' => 5,
+                'rate' => 10000,
+            ],
+            [
+                'name' => 'Container load of Bibles',
+                'quantity' => 5,
+                'rate' => 10000,
+            ],
+        ];
+        $order_items = json_decode(json_encode($items));
         Mail::to($user)->send(new OrderDetails($user, $order, $order_items));
     }
     public function handle()
